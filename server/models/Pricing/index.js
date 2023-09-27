@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
+var mhl = require('mongoose-history-log');
 
 const PricingSchema = new mongoose.Schema({
 
@@ -25,5 +25,7 @@ const PricingSchema = new mongoose.Schema({
     versionKey: false,
     timestamps: true,
 })
+
+mhl(PricingSchema)
 
 module.exports = mongoose.model('Pricing', PricingSchema);

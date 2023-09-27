@@ -7,12 +7,12 @@ const PricingMasterSchema = new mongoose.Schema({
         required: true,
         ref: 'Users'
     },
-    pricing: [{
+    pricing: {
         type: Schema.Types.ObjectId,
         ref: 'Pricing',
         required: true,
-        default: []
-    }],
+        default: null
+    },
 
 }, {
     versionKey: false,
