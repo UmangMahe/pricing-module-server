@@ -130,7 +130,7 @@ router.put('/', async (req, res) => {
                 rule.history[i].meta = { id: user._id, name: user.name }
                 await rule.save();
                 const count = await Pricing.count();
-                if (count === 1){
+                if (count === 1) {
                     await PricingMaster.findOneAndUpdate({}, { pricing: rule._id }, { upsert: true, new: true })
                     rule.history.push({
                         status: "Set configuration as default (automatically)",
@@ -141,7 +141,7 @@ router.put('/', async (req, res) => {
                     })
                     await rule.save()
                 }
-                    
+
                 return res.status(200).json({
                     message: `Configuration - ${rule.name} created successfully`
                 })
@@ -180,15 +180,14 @@ router.patch('/update', async (req, res) => {
             const rule = await Pricing.findById(id)
             if (rule) {
 
-                const { name, disabled, dbp, dap, tmp, wc } = req.fields
+                const { name, dbp, dap, tmp, wc } = req.fields
 
                 const exists = await Pricing.exists({ name: name, _id: { $ne: id } })
                 if (exists) return res.status(400).json({
                     message: "Pricing configuration with the same exist",
                 })
-                rule.name = name;
-                rule.disabled = !!disabled;
 
+                rule.name = name;
                 await rule.save().then(async item => {
 
                     try {
@@ -230,10 +229,67 @@ router.patch('/update', async (req, res) => {
                     }
 
                 }).then(item => {
-
-
                     return res.status(200).json({
                         message: `Pricing Configuration for ${item.name} updated`,
+                        data: item
+                    })
+                })
+                return;
+            }
+            else {
+                return res.status(404).json({
+                    message: "Pricing configuration doesn't exists"
+                })
+            }
+        }
+        else {
+            return res.status(404).json({
+                message: "User doesn't exists"
+            })
+        }
+
+    }
+    catch (err) {
+        const message = ErrorHandler(err);
+        return res.status(401).json({
+            message
+        })
+    }
+})
+
+// @desc    Update Pricing by Id
+// @route   PUT /api/pricing/configuration/update?id=
+
+router.patch('/toggle', async (req, res) => {
+
+    const { id } = req.user
+
+    try {
+        const user = await Users.findById(id);
+        if (user) {
+
+            const { id } = req.query
+
+            const rule = await Pricing.findById(id)
+            if (rule) {
+
+                const check_rule = await PricingMaster.findOne({ pricing: rule._id })
+                if (check_rule && !rule.disabled) return res.status(400).json({
+                    message: 'Cannot disable a configuration which is already in use'
+                })
+
+                rule.disabled = !rule.disabled;
+
+                rule.history.push({
+                    status: `${rule.disabled ? 'Disabled' : 'Enabled'} configuration`,
+                    meta: {
+                        id: user._id,
+                        name: user.name
+                    }
+                })
+                await rule.save().then(item => {
+                    return res.status(200).json({
+                        message: `Pricing Configuration for ${item.name} - ${rule.disabled ? 'Disabled' : 'Enabled'}`,
                         data: item
                     })
                 })
