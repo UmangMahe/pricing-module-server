@@ -1,0 +1,12 @@
+.bubble-wrapper{
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+}
+
+.msg-status {
+    span{
+        font-size: 0.8em;
+        margin-left: 1rem;
+    }
+}
