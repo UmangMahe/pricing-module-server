@@ -16,7 +16,7 @@ module.exports = {
 // Load config 
 
 dotenv.config({
-    path: './config.env'
+    path: './.env'
 })
 
 // Connect to DB
