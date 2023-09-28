@@ -6,14 +6,11 @@ import Views from './views';
 import { Route, Switch } from 'react-router-dom';
 import { ThemeSwitcherProvider } from "react-css-theme-switcher";
 import { THEME_CONFIG } from './configs/AppConfig';
-import { authenticated } from './redux/actions/Auth';
 
 const themes = {
   dark: `/css/dark-theme.css`,
   light: `/css/light-theme.css`,
 };
-
-console.log(themes)
 
 function App() {
 

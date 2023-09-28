@@ -10,8 +10,6 @@ import {
 	showLoading, 
 	showAuthMessage, 
 	hideAuthMessage, 
-	signInWithGoogle, 
-	signInWithFacebook 
 } from '@redux/actions/Auth';
 import { useHistory } from "react-router-dom";
 import { motion } from "framer-motion"
@@ -25,8 +23,6 @@ export const LoginForm = props => {
 		hideAuthMessage,
 		onForgetPasswordClick,
 		showLoading,
-		signInWithGoogle,
-		signInWithFacebook,
 		extra, 
 		signIn, 
 		token, 
@@ -38,24 +34,14 @@ export const LoginForm = props => {
 	} = props
 
 	const initialCredential = {
-		email: 'umang@gmail.com',
-		password: 'umang123'
+		email: 'admin@gmail.com',
+		password: 'admin@123'
 	}
 
 	const onLogin = values => {
 		showLoading()
 		signIn(values);
 	};
-
-	const onGoogleLogin = () => {
-		showLoading()
-		signInWithGoogle()
-	}
-
-	const onFacebookLogin = () => {
-		showLoading()
-		signInWithFacebook()
-	}
 
 	useEffect(() => {
 		if (token !== null && allowRedirect) {
@@ -67,31 +53,7 @@ export const LoginForm = props => {
 			}, 3000);
 		}
 	});
-	
-	const renderOtherSignIn = (
-		<div>
-			<Divider>
-				<span className="text-muted font-size-base font-weight-normal">or connect with</span>
-			</Divider>
-			<div className="d-flex justify-content-center">
-				<Button 
-					onClick={() => onGoogleLogin()} 
-					className="mr-2" 
-					disabled={loading} 
-					icon={<CustomIcon svg={GoogleSVG}/>}
-				>
-					Google
-				</Button>
-				<Button 
-					onClick={() => onFacebookLogin()} 
-					icon={<CustomIcon svg={FacebookSVG}/>}
-					disabled={loading} 
-				>
-					Facebook
-				</Button>
-			</div>
-		</div>
-	)
+
 
 	return (
 		<>
@@ -156,9 +118,7 @@ export const LoginForm = props => {
 						Sign In
 					</Button>
 				</Form.Item>
-				{
-					otherSignIn ? renderOtherSignIn : null
-				}
+				
 				{ extra }
 			</Form>
 		</>
@@ -189,8 +149,6 @@ const mapDispatchToProps = {
 	showAuthMessage,
 	showLoading,
 	hideAuthMessage,
-	signInWithGoogle,
-	signInWithFacebook
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginForm)

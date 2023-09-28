@@ -3,13 +3,11 @@ import PageHeaderAlt from '@components/layout-components/PageHeaderAlt'
 import { Tabs, Form, Button, message } from 'antd';
 import Flex from '@components/shared-components/Flex'
 import GeneralField from './GeneralField'
-import VariationField from './VariationField'
 import ShippingField from './ShippingField'
 import { useAxiosCallback } from '@utils/useFetch';
-import { PRODUCT_LIST } from '@constants/ApiConstants';
 import Utils from '@utils';
 import {Redirect, useHistory} from 'react-router-dom'
-import { PRODUCT_IMAGES } from '../../../../constants/ApiConstants';
+
 import { APP_PREFIX_PATH } from '../../../../configs/AppConfig';
 
 const { TabPane } = Tabs;
@@ -48,7 +46,7 @@ const ProductForm = props => {
 			const produtId = parseInt(id)
 			getProducts({
 				method: 'GET',
-				url: `${PRODUCT_LIST}/${produtId}`,
+				url: ``,
 				success:(res)=>{
 					console.log('res', res)
 					const {product} = res

@@ -7,7 +7,7 @@ export default function Footer() {
 		<footer className="footer">
 			<span>Copyright  &copy;  {`${new Date().getFullYear()}`} <span className="font-weight-semibold">{`${APP_NAME}`}</span> All rights reserved.</span>
 			<div>
-			<span>Design and Developed by {" "}</span><a className="text-primary" href="/#" onClick={e => e.preventDefault()}>Infikey Technologies Pvt Ltd.</a>
+			<span>Design and Developed by {" "}</span><a className="text-primary" href="/#" onClick={e => e.preventDefault()}>Umang Maheshwari.</a>
 				<span className="mx-2 text-muted"> | </span>
 				<a className="text-gray" href="/#" onClick={e => e.preventDefault()}>Privacy & Policy</a>
 			</div>

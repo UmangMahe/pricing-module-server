@@ -22,7 +22,6 @@ import utils from "@utils";
 import { useThemeSwitcher } from "react-css-theme-switcher";
 import { Suspense } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import Socket from "../../utils/Socket";
 
 const { Content } = Layout;
 const { useBreakpoint } = Grid;
@@ -87,7 +86,6 @@ export const AppLayout = (
                   <Redirect to="/404" />
                 </Switch>
               </Suspense>
-              <Socket {...props} />
             </Content>
           </div>
           <Footer />

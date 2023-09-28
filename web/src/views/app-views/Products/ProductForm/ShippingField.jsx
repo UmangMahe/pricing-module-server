@@ -3,14 +3,11 @@ import { Upload, Card, Form, InputNumber, Select, Modal, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { useAxiosCallback } from "@utils/useFetch";
-import { PRODUCT_IMAGES } from "@constants/ApiConstants";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Utils from "../../../../utils";
 const { Option } = Select;
 
-const legthUnit = ["cm", "mm", "m"];
-const weightUnit = ["kg", "g", "mg"];
 
 const getBase64 = (img, callback) => {
   const reader = new FileReader();
@@ -71,7 +68,7 @@ const ShippingField = ({ images = [], isLoading, ...props }) => {
     const { onSuccess, onProgress } = info;
     onImageUpload({
       method: "post",
-      url: PRODUCT_IMAGES,
+      url: '',
       data: form,
       onUploadProgress: (event) => {
         onProgress({ percent: (event.loaded / event.total) * 100 });
@@ -105,25 +102,7 @@ const ShippingField = ({ images = [], isLoading, ...props }) => {
             return isJpgOrPng && isLt2M;
           }}
           onPreview={handlePreview}
-          onRemove={(file) => {
-            OnImageRemove({
-              url: `${PRODUCT_IMAGES}/${file.response?.id || file?.id}`,
-              method: "POST",
-              data: {
-                _method: "delete",
-              },
-              headers: {
-                contentType: "multipart/form-data",
-              },
-              success: (res) => {
-                message.success("Image removed successfully");
-                const fileIndex = fileList.indexOf(file);
-                const newFileList = fileList.slice();
-                newFileList.splice(fileIndex, 1);
-                return setFileList(newFileList);
-              },
-            });
-          }}
+          
           onChange={handleChange}
         >
           {fileList.length >= 8 ? null : uploadButton}

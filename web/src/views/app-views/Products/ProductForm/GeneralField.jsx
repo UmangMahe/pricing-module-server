@@ -14,12 +14,6 @@ import {
 import { ImageSvg } from "@assets/svg/icon";
 import CustomIcon from "@components/util-components/CustomIcon";
 import { LoadingOutlined } from "@ant-design/icons";
-import { useAxios } from "@utils/useFetch";
-import {
-  CATEGORY_LIST,
-  SUB_CATEGORY_LIST,
-} from "../../../../constants/ApiConstants";
-import { useAxiosCallback } from "../../../../utils/useFetch";
 
 const { Dragger } = Upload;
 const { Option } = Select;
@@ -94,55 +88,12 @@ const GeneralField = (props) => {
     showUploadList: false,
   };
 
-  const { data: categories, loadingDone: loadingDoneCategories } = useAxios(
-    {
-      method: "GET",
-      url: CATEGORY_LIST,
-    },
-    "categories"
-  );
-
-  const { loadingDone: loadingDoneSubCategories, callback: getSubCategories } =
-    useAxiosCallback();
+  const [categories, setCategories] = useState(null);
 
   const [subCategories, setSubCategories] = useState(null);
 
-  useEffect(() => {
-    if (!subCategories) {
-      setTimeout(() => {
-        getSubCategories({
-          method: "GET",
-          url: SUB_CATEGORY_LIST,
-          success: (res) => {
-            const categoryId = props.form.getFieldValue("category_id");
-
-            let newSubCategory = res.sub_categories.filter((subCategory) => {
-              return subCategory.category_id === categoryId;
-            });
-
-            setNewSubCategories(newSubCategory);
-            setSubCategories(res.sub_categories);
-          },
-        });
-      }, 0);
-    }
-  }, [props.form.getFieldValue("category_id"), props.form, subCategories]);
 
   const [newSubCategory, setNewSubCategories] = useState(null);
-
-  const handleCategory = (value) => {
-    setNewSubCategories(null);
-
-    let newSubCategory = subCategories?.filter((subCategory) => {
-      return subCategory.category_id === value;
-    });
-    if (newSubCategory.length) {
-      setNewSubCategories(newSubCategory);
-      props.form.setFieldsValue({
-        sub_category_id: newSubCategory[0].id,
-      });
-    }
-  };
 
   return (
     <Row gutter={16}>
@@ -294,8 +245,6 @@ const GeneralField = (props) => {
             <Select
               className="w-100"
               placeholder="Category"
-              onChange={handleCategory}
-              loading={!loadingDoneCategories}
             >
               {categories?.map((elm) => (
                 <Option key={elm.id} value={elm.id}>
@@ -309,7 +258,7 @@ const GeneralField = (props) => {
               <Select
                 className="w-100"
                 placeholder="Sub Category"
-                loading={!loadingDoneSubCategories}
+                
               >
                 {newSubCategory.map((elm) => (
                   <Option key={elm.id} value={elm.id}>

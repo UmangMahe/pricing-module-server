@@ -14,8 +14,12 @@ import Flex from "../shared-components/Flex";
 const { SubMenu } = Menu;
 const { useBreakpoint } = Grid;
 
-const setLocale = (isLocaleOn, localeKey) =>
-  isLocaleOn ? <IntlMessage id={localeKey} /> : localeKey.toString();
+const setLocale = (isLocaleOn, localeKey) => {
+  if (isLocaleOn) {
+    return <IntlMessage id={localeKey} />;
+  } 
+  return localeKey.toString();
+};
 
 const setDefaultOpen = (key) => {
   let keyList = [];
@@ -133,7 +137,7 @@ const SideNavContent = (props) => {
 };
 
 const TopNavContent = (props) => {
-  const { topNavColor, localization, unreadMessages } = props;
+  const { topNavColor, localization } = props;
   return (
     <Menu mode="horizontal" style={{ backgroundColor: topNavColor }}>
       {navigationConfig.map((menu) =>
@@ -177,7 +181,7 @@ const TopNavContent = (props) => {
                       ) : null}
                       <span>{setLocale(localization, subMenuFirst.title)}</span>
                     </div>
-                    {subMenuFirst?.badgeCount && <Badge count={unreadMessages} />}
+                    {subMenuFirst?.badgeCount && <Badge count={0} />}
                   </Flex>
 
                   <Link to={subMenuFirst.path} />
@@ -192,7 +196,7 @@ const TopNavContent = (props) => {
                 {menu.icon ? <Icon type={menu?.icon} /> : null}
                 <span>{setLocale(localization, menu?.title)}</span>
               </div>
-              {menu?.badgeCount && <Badge count={unreadMessages} />}
+              {menu?.badgeCount && <Badge count={0} />}
             </Flex>
             {menu.path ? <Link to={menu.path} /> : null}
           </Menu.Item>
@@ -210,10 +214,9 @@ const MenuContent = (props) => {
   );
 };
 
-const mapStateToProps = ({ theme, socket }) => {
+const mapStateToProps = ({ theme }) => {
   const { sideNavTheme, topNavColor } = theme;
-  const { unreadMessages } = socket;
-  return { sideNavTheme, topNavColor, unreadMessages };
+  return { sideNavTheme, topNavColor };
 };
 
 export default connect(mapStateToProps, { onMobileNavToggle })(MenuContent);
