@@ -10,6 +10,7 @@ const Pricing = require('../../../../../models/Pricing');
 const ErrorHandler = require('../../../../../errors/ErrorHandler');
 const PricingMaster = require('../../../../../models/PricingMaster');
 const Logs = require('../../../../../models/Logs');
+const { default: mongoose } = require('mongoose');
 
 // @desc    Get Pricing Configuration By Id
 // @route   GET /api/pricing/configuration/:id
@@ -26,7 +27,7 @@ router.get('/:id', async (req, res) => {
                 if (rule) {
                     const dbp = await DBP.find({ pricingId: rule._id }).select({ "price": 1, "uptoKms": 1, "days": 1 });
                     const dap = await DAP.findOne({ pricingId: rule._id }).select({ "price": 1, "afterKms": 1 });
-                    const tmp = await TMP.find({ pricingId: rule._id }).select({ "multiplier": 1, "condition": 1, "perTime": 1 });
+                    const tmp = await TMP.find({ pricingId: rule._id }).select({ "multiplier": 1, "until": 1, "after": 1 });
                     const wc = await WC.findOne({ pricingId: rule._id }).select({ "initialWaitTime": 1, "perWaitTime": 1, "price": 1 });
 
 
@@ -143,7 +144,7 @@ router.put('/', async (req, res) => {
                             name: user.name
                         }
                     })
-                    
+
                     await log.save()
                 }
 
@@ -198,15 +199,15 @@ router.patch('/update', async (req, res) => {
                     try {
                         const { _id } = item
                         const updatedDBP = await Promise.all(dbp.map(async dbpItem => {
-                            return await DBP.findOneAndUpdate({ pricingId: _id, _id: dbpItem._id }, { ...dbpItem }, {upsert:true, new: true }).select({ "price": 1, "uptoKms": 1, "days": 1 });
+                            return await DBP.findOneAndUpdate({ pricingId: _id, _id: dbpItem._id ?? new mongoose.Types.ObjectId() }, { ...dbpItem }, { upsert: true, new: true }).select({ "price": 1, "uptoKms": 1, "days": 1 });
                         }))
 
-                        const updatedDAP = await DAP.findOneAndUpdate({ pricingId: _id, _id: dap._id }, { ...dap }, {upsert:true, new: true }).select({ "price": 1, "afterKms": 1 });
+                        const updatedDAP = await DAP.findOneAndUpdate({ pricingId: _id, _id: dap._id ?? new mongoose.Types.ObjectId() }, { ...dap }, { upsert: true, new: true }).select({ "price": 1, "afterKms": 1 });
                         const updatedTMP = await Promise.all(tmp.map(async tmpItem => {
-                            return await TMP.findOneAndUpdate({ pricingId: _id, _id: tmpItem._id }, { ...tmpItem }, {upsert:true, new: true }).select({ "multiplier": 1, "condition": 1, "perTime": 1 });
+                            return await TMP.findOneAndUpdate({ pricingId: _id, _id: tmpItem._id ?? new mongoose.Types.ObjectId() }, { ...tmpItem }, { upsert: true, new: true }).select({ "multiplier": 1, "until": 1, "after": 1 });
                         }))
 
-                        const updatedWC = await WC.findOneAndUpdate({ pricingId: _id, _id: wc._id }, { ...wc }, {upsert:true, new: true }).select({ "initialWaitTime": 1, "perWaitTime": 1, "price": 1 });
+                        const updatedWC = await WC.findOneAndUpdate({ pricingId: _id, _id: wc._id ?? new mongoose.Types.ObjectId() }, { ...wc }, { upsert: true, new: true }).select({ "initialWaitTime": 1, "perWaitTime": 1, "price": 1 });
 
                         const log = await Logs.create({
                             pricingId: _id,
@@ -216,7 +217,7 @@ router.patch('/update', async (req, res) => {
                                 name: user.name
                             }
                         })
-                        
+
                         log.save()
 
                         return {
@@ -297,10 +298,7 @@ router.patch('/toggle', async (req, res) => {
                 })
 
                 log.save();
-                await (await rule.save()).populate({
-                    path: 'userId',
-                    select: {name: 1}
-                }).then(item => {
+                await rule.save().then(item => {
                     return res.status(200).json({
                         message: `Pricing Configuration for ${item.name} - ${rule.disabled ? 'Disabled' : 'Enabled'}`,
                         data: item
