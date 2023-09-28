@@ -90,8 +90,8 @@ const ProductList = ({ match, ...props }) => {
     </Menu>
   );
 
-  const addProduct = () => {
-    history.push(`${match.url}/add-product`);
+  const addConfig = () => {
+    history.push(`${match.url}/add-config`);
   };
 
   const editDetails = (row) => {
@@ -252,13 +252,13 @@ const ProductList = ({ match, ...props }) => {
         }
         rightHeaderRender={
           <Button
-            onClick={addProduct}
+            onClick={addConfig}
             className="w-auto"
             type="primary"
             icon={<PlusCircleOutlined />}
             block
           >
-            Add product
+            Add Config
           </Button>
         }
       />

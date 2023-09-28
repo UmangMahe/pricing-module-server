@@ -64,16 +64,6 @@ const rules = {
   ],
 };
 
-const tags = [
-  "Cotton",
-  "Nike",
-  "Sales",
-  "Sports",
-  "Outdoor",
-  "Toys",
-  "Hobbies",
-];
-
 const dbpDefaults = [
   {
     id: 1,
@@ -106,22 +96,11 @@ const dbpDefaults = [
 ];
 
 const options = [
-  { label: 'Until', value: 'until' },
-  { label: 'After', value: 'after' },
+  { label: "Until", value: "until" },
+  { label: "After", value: "after" },
 ];
 
-const GeneralField = ({form}) => {
-  const [categories, setCategories] = useState(null);
-
-  const [subCategories, setSubCategories] = useState(null);
-
-  const [newSubCategory, setNewSubCategories] = useState(null);
-
-  const handleChange = (key, item) => {
-    // console.log(form.getFieldValue(tmp[key]))
-    console.log(key)
-  };
-
+const GeneralField = ({ form }) => {
   return (
     <Row gutter={16}>
       <Col xs={24} sm={24} md={14}>
@@ -140,49 +119,48 @@ const GeneralField = ({form}) => {
             <Row className="mt-2">
               {dbpDefaults.map((item, index) => (
                 <Col key={item.id} xs={24} sm={24} md={24}>
-                  <Input.Group>
-                    <Row gutter={8}>
-                      <Col className="mr-md-2" xs={24} sm={24} md={5}>
-                        <Form.Item
-                          // noStyle
-                          valuePropName="name"
-                          rules={[
-                            { required: true, message: "Province is required" },
-                          ]}
-                        >
-                          <Input placeholder={item.day} disabled></Input>
-                        </Form.Item>
-                      </Col>
-                      <Col xs={24} sm={24} md={7}>
-                        <Form.Item
-                          name={["dbp", item.id, `price`]}
-                          rules={[
-                            { required: true, message: "Street is required" },
-                          ]}
-                        >
-                          <InputNumber
-                            prefix={<div className="mr-2">₹</div>}
-                            className="w-100"
-                            placeholder="Price (in ₹)"
-                          />
-                        </Form.Item>
-                      </Col>
-                      <Col xs={24} sm={24} md={9}>
-                        <Form.Item
-                          name={["dbp", item.id, `uptoKms`]}
-                          rules={[
-                            { required: true, message: "Street is required" },
-                          ]}
-                        >
-                          <InputNumber
-                            addonAfter="Kms"
-                            className="w-100"
-                            placeholder="Upto (in Kms)"
-                          />
-                        </Form.Item>
-                      </Col>
-                    </Row>
-                  </Input.Group>
+                  <Row gutter={8}>
+                    <Form.Item hidden name={["dbp", item.id, "_id"]} />
+                    <Col className="mr-md-2" xs={24} sm={24} md={5}>
+                      <Form.Item
+                        // noStyle
+                        valuePropName="name"
+                        rules={[
+                          { required: true, message: "Province is required" },
+                        ]}
+                      >
+                        <Input placeholder={item.day} disabled></Input>
+                      </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={24} md={7}>
+                      <Form.Item
+                        name={["dbp", item.id, `price`]}
+                        rules={[
+                          { required: true, message: "Street is required" },
+                        ]}
+                      >
+                        <InputNumber
+                          prefix={<div className="mr-2">₹</div>}
+                          className="w-100"
+                          placeholder="Price (in ₹)"
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={24} md={9}>
+                      <Form.Item
+                        name={["dbp", item.id, `uptoKms`]}
+                        rules={[
+                          { required: true, message: "Street is required" },
+                        ]}
+                      >
+                        <InputNumber
+                          addonAfter="Kms"
+                          className="w-100"
+                          placeholder="Upto (in Kms)"
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
                 </Col>
               ))}
             </Row>
@@ -193,6 +171,7 @@ const GeneralField = ({form}) => {
         <Card title="Distance Additional Price (DAP)">
           <Row className="mt-md-2" gutter={16}>
             <Col xs={24} sm={24} md={11}>
+              <Form.Item hidden name={["dap", "_id"]} />
               <Form.Item
                 name={["dap", `price`]}
                 label="Price"
@@ -222,15 +201,26 @@ const GeneralField = ({form}) => {
           </Row>
         </Card>
         <Card title="Time Multiplier Factor(TMF)">
-          <Row>
+          <Row className="mt-md-2">
             <Col xs={24} sm={24} md={24}>
-              <Form.List name={"tmp"}>
-                {(fields, { add, remove }) => (
+              <Form.List
+                name={"tmp"}
+                rules={[
+                  {
+                    validator: async (_, tmp) => {
+                      if (!tmp || tmp.length < 1) {
+                        return Promise.reject(new Error("At least 1 rule"));
+                      }
+                    },
+                  },
+                ]}
+              >
+                {(fields, { add, remove }, { errors }) => (
                   <>
                     {fields.map(({ key, name, ...restField }, index) => (
                       <>
-                        <Row gutter={16} align="">
-                          <Col xs={24} sm={24} md={7}>
+                        <Row key={key} gutter={16} align="">
+                          <Col xs={24} sm={24} md={6}>
                             <Form.Item
                               {...restField}
                               label="Multiplier"
@@ -249,11 +239,11 @@ const GeneralField = ({form}) => {
                               />
                             </Form.Item>
                           </Col>
-                          <Col xs={24} sm={24} md={7}>
+                          <Col xs={24} sm={24} md={9}>
                             <Form.Item
                               {...restField}
                               label="Condition"
-                              name={[name, 'condition']}
+                              name={[name, "condition"]}
                               rules={[
                                 {
                                   required: true,
@@ -261,15 +251,17 @@ const GeneralField = ({form}) => {
                                 },
                               ]}
                             >
-                              <Select onChange={(item)=>handleChange(index, item)} placeholder="Condition" options={options} />
+                              <Select
+                                placeholder="Condition"
+                                options={options}
+                              />
                             </Form.Item>
                           </Col>
-                          <Col xs={24} sm={24} md={8}>
+                          <Col xs={24} sm={24} md={7}>
                             <Form.Item
                               {...restField}
                               label="Time (in hrs)"
-                              name={[name, "last"]}
-                              
+                              name={[name, "perTime"]}
                               rules={[
                                 {
                                   required: true,
@@ -277,16 +269,21 @@ const GeneralField = ({form}) => {
                                 },
                               ]}
                             >
-                              <InputNumber disabled={!form.getFieldValue('condition')} addonAfter="hr(s)" placeholder="Hours" />
+                              <InputNumber
+                                addonAfter="hr(s)"
+                                placeholder="Hours"
+                              />
                             </Form.Item>
                           </Col>
-                          <Col xs={24} sm={24} md={2}>
-                            <Button
-                              type="text"
-                              icon={<MinusCircleOutlined />}
-                              onClick={() => remove(name)}
-                            />
-                          </Col>
+                          {fields.length > 1 ? (
+                            <Col xs={24} sm={24} md={2}>
+                              <Button
+                                type="text"
+                                icon={<MinusCircleOutlined />}
+                                onClick={() => remove(name)}
+                              />
+                            </Col>
+                          ) : null}
                         </Row>
                       </>
                     ))}
@@ -298,12 +295,57 @@ const GeneralField = ({form}) => {
                         block
                         icon={<PlusOutlined />}
                       >
-                        Add field
+                        Add rule
                       </Button>
                     </Form.Item>
+                    <Form.ErrorList errors={errors} />
                   </>
                 )}
               </Form.List>
+            </Col>
+          </Row>
+        </Card>
+        <Card title="Waiting Charges (WC)">
+          <Row className="mt-md-2" gutter={16}>
+            <Col xs={24} sm={24} md={24}>
+              <Form.Item hidden name={["wc", "_id"]} />
+              <Form.Item
+                name={["wc", `initialWaitTime`]}
+                label="Initial Wait Time"
+                rules={[{ required: true, message: "Street is required" }]}
+              >
+                <InputNumber
+                  addonAfter="minute(s)"
+                  className="w-100"
+                  placeholder="Time (in minute(s))"
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={24} md={11}>
+              <Form.Item
+                name={["wc", `price`]}
+                label="Price"
+                rules={[{ required: true, message: "Street is required" }]}
+              >
+                <InputNumber
+                  prefix={<div className="mr-2">₹</div>}
+                  className="w-100"
+                  placeholder="Price (in ₹)"
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={24} md={13}>
+              <Form.Item
+                name={["wc", `perWaitTime`]}
+                label="Per Wait Time"
+                rules={[{ required: true, message: "Street is required" }]}
+              >
+                <InputNumber
+                  addonAfter="minute(s)"
+                  className="w-100"
+                  placeholder="Time (in minute(s))"
+                />
+              </Form.Item>
             </Col>
           </Row>
         </Card>
