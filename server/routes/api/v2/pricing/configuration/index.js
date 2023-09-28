@@ -132,7 +132,7 @@ router.put('/', async (req, res) => {
                     status: "Created configuration",
                     meta: { id: user._id, name: user.name }
                 })
-                log.save()
+                await log.save()
                 const count = await Pricing.count();
                 if (count === 1) {
                     await PricingMaster.findOneAndUpdate({}, { pricing: rule._id }, { upsert: true, new: true })
@@ -218,7 +218,7 @@ router.patch('/update', async (req, res) => {
                             }
                         })
 
-                        log.save()
+                        await log.save()
 
                         return {
                             ...item.toObject(),
@@ -297,7 +297,7 @@ router.patch('/toggle', async (req, res) => {
                     }
                 })
 
-                log.save();
+                await log.save();
                 await rule.save().then(item => {
                     return res.status(200).json({
                         message: `Pricing Configuration for ${item.name} - ${rule.disabled ? 'Disabled' : 'Enabled'}`,

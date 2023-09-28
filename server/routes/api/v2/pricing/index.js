@@ -90,7 +90,7 @@ router.delete('/delete', auth.verifyToken, async (req, res) => {
                     })
                     let deletedRule = await Pricing.findOneAndDelete({ _id: rule._id });
                     if (deletedRule) {
-                        log.save();
+                        await log.save();
                         return res.status(200).json({
                             message: "Removed pricing configuration Successfully",
                         })
@@ -213,6 +213,10 @@ router.get('/use', auth.verifyToken, async (req, res) => {
             try {
                 rule.populate({
                     path: 'pricing',
+                    populate: {
+                        path: 'userId',
+                        select: {name:1}
+                    }
                 }).then(rule => {
                     const { pricing } = rule
                     return res.status(200).json({
