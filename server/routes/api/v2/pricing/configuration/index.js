@@ -198,15 +198,15 @@ router.patch('/update', async (req, res) => {
                     try {
                         const { _id } = item
                         const updatedDBP = await Promise.all(dbp.map(async dbpItem => {
-                            return await DBP.findOneAndUpdate({ pricingId: _id, _id: dbpItem._id }, { ...dbpItem }, { new: true }).select({ "price": 1, "uptoKms": 1, "days": 1 });
+                            return await DBP.findOneAndUpdate({ pricingId: _id, _id: dbpItem._id }, { ...dbpItem }, {upsert:true, new: true }).select({ "price": 1, "uptoKms": 1, "days": 1 });
                         }))
 
-                        const updatedDAP = await DAP.findOneAndUpdate({ pricingId: _id, _id: dap._id }, { ...dap }, { new: true }).select({ "price": 1, "afterKms": 1 });
+                        const updatedDAP = await DAP.findOneAndUpdate({ pricingId: _id, _id: dap._id }, { ...dap }, {upsert:true, new: true }).select({ "price": 1, "afterKms": 1 });
                         const updatedTMP = await Promise.all(tmp.map(async tmpItem => {
-                            return await TMP.findOneAndUpdate({ pricingId: _id, _id: tmpItem._id }, { ...tmpItem }, { new: true }).select({ "multiplier": 1, "condition": 1, "perTime": 1 });
+                            return await TMP.findOneAndUpdate({ pricingId: _id, _id: tmpItem._id }, { ...tmpItem }, {upsert:true, new: true }).select({ "multiplier": 1, "condition": 1, "perTime": 1 });
                         }))
 
-                        const updatedWC = await WC.findOneAndUpdate({ pricingId: _id, _id: wc._id }, { ...wc }, { new: true }).select({ "initialWaitTime": 1, "perWaitTime": 1, "price": 1 });
+                        const updatedWC = await WC.findOneAndUpdate({ pricingId: _id, _id: wc._id }, { ...wc }, {upsert:true, new: true }).select({ "initialWaitTime": 1, "perWaitTime": 1, "price": 1 });
 
                         const log = await Logs.create({
                             pricingId: _id,
