@@ -10,16 +10,16 @@ import {
   message,
   Select,
   Checkbox,
+  Button,
+  Space,
 } from "antd";
 import { ImageSvg } from "@assets/svg/icon";
 import CustomIcon from "@components/util-components/CustomIcon";
-import { LoadingOutlined } from "@ant-design/icons";
-import { useAxios } from "@utils/useFetch";
 import {
-  CATEGORY_LIST,
-  SUB_CATEGORY_LIST,
-} from "../../../../constants/ApiConstants";
-import { useAxiosCallback } from "../../../../utils/useFetch";
+  LoadingOutlined,
+  MinusCircleOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 
 const { Dragger } = Upload;
 const { Option } = Select;
@@ -28,25 +28,25 @@ const rules = {
   name: [
     {
       required: true,
-      message: "Please enter product name",
+      message: "Please enter Configuration name",
     },
   ],
   description: [
     {
       required: true,
-      message: "Please enter product description",
+      message: "Please enter Configuration description",
     },
   ],
   sort_description: [
     {
       required: true,
-      message: "Please enter product's short description",
+      message: "Please enter Configuration's short description",
     },
   ],
   price: [
     {
       required: true,
-      message: "Please enter product price",
+      message: "Please enter Configuration price",
     },
   ],
   comparePrice: [],
@@ -64,267 +64,290 @@ const rules = {
   ],
 };
 
-const tags = [
-  "Cotton",
-  "Nike",
-  "Sales",
-  "Sports",
-  "Outdoor",
-  "Toys",
-  "Hobbies",
+const dbpDefaults = [
+  {
+    id: 1,
+    day: "Monday",
+  },
+  {
+    id: 2,
+    day: "Tuesday",
+  },
+  {
+    id: 3,
+    day: "Wednesday",
+  },
+  {
+    id: 4,
+    day: "Thursday",
+  },
+  {
+    id: 5,
+    day: "Friday",
+  },
+  {
+    id: 6,
+    day: "Saturday",
+  },
+  {
+    id: 7,
+    day: "Sunday",
+  },
 ];
 
-const GeneralField = (props) => {
-  const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    if (!isJpgOrPng) {
-      message.error("You can only upload JPG/PNG file!");
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error("Image must smaller than 2MB!");
-    }
-    return isJpgOrPng && isLt2M && false;
-  };
+const options = [
+  { label: "Until", value: "until" },
+  { label: "After", value: "after" },
+];
 
-  const imageUploadProps = {
-    name: "icon",
-    multiple: false,
-    listType: "picture-card",
-    showUploadList: false,
-  };
-
-  const { data: categories, loadingDone: loadingDoneCategories } = useAxios(
-    {
-      method: "GET",
-      url: CATEGORY_LIST,
-    },
-    "categories"
-  );
-
-  const { loadingDone: loadingDoneSubCategories, callback: getSubCategories } =
-    useAxiosCallback();
-
-  const [subCategories, setSubCategories] = useState(null);
-
-  useEffect(() => {
-    if (!subCategories) {
-      setTimeout(() => {
-        getSubCategories({
-          method: "GET",
-          url: SUB_CATEGORY_LIST,
-          success: (res) => {
-            const categoryId = props.form.getFieldValue("category_id");
-
-            let newSubCategory = res.sub_categories.filter((subCategory) => {
-              return subCategory.category_id === categoryId;
-            });
-
-            setNewSubCategories(newSubCategory);
-            setSubCategories(res.sub_categories);
-          },
-        });
-      }, 0);
-    }
-  }, [props.form.getFieldValue("category_id"), props.form, subCategories]);
-
-  const [newSubCategory, setNewSubCategories] = useState(null);
-
-  const handleCategory = (value) => {
-    setNewSubCategories(null);
-
-    let newSubCategory = subCategories?.filter((subCategory) => {
-      return subCategory.category_id === value;
-    });
-    if (newSubCategory.length) {
-      setNewSubCategories(newSubCategory);
-      props.form.setFieldsValue({
-        sub_category_id: newSubCategory[0].id,
-      });
-    }
-  };
-
+const GeneralField = ({ form }) => {
   return (
     <Row gutter={16}>
-      <Col xs={24} sm={24} md={17}>
+      <Col xs={24} sm={24} md={14}>
         <Card title="Basic Info">
-          <Form.Item name="name" label="Product name" rules={rules.name}>
-            <Input placeholder="Product Name" />
-          </Form.Item>
           <Form.Item
-            name="description"
-            label="Description"
-            rules={rules.description}
+            className="mt-md-2"
+            name="name"
+            label="Configuration Name"
+            rules={rules.name}
           >
-            <Input.TextArea rows={4} />
-          </Form.Item>
-          <Form.Item
-            name="sort_description"
-            label="Short Description"
-            rules={rules.sort_description}
-          >
-            <Input placeholder="Short Description" />
+            <Input placeholder="Configuration Name" />
           </Form.Item>
         </Card>
-        <Card title="Pricing">
-          <Row gutter={16}>
-            <Col xs={24} sm={24} md={12}>
-              <Form.Item name="price" label="Price" rules={rules.price}>
-                <InputNumber
-                  className="w-100"
-				  formatter={value => `₹ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-				  parser={value => value.replace(/₹|(,*)/g, '')}
-                  
-                />
-              </Form.Item>
-            </Col>
-            {/* <Col xs={24} sm={24} md={12}>
-						<Form.Item name="comparePrice" label="Compare price" rules={rules.comparePrice}>
-							<InputNumber
-								className="w-100"
-								value={0}
-								formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-								parser={value => value.replace(/\$\s?|(,*)/g, '')}
-							/>
-						</Form.Item>
-					</Col> */}
-            {/* <Col xs={24} sm={24} md={12}>
-						<Form.Item name="cost" label="Cost per item" rules={rules.cost}>
-							<InputNumber
-								className="w-100"
-								formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-								parser={value => value.replace(/\$\s?|(,*)/g, '')}
-							/>
-						</Form.Item>
-					</Col> */}
-            {/* <Col xs={24} sm={24} md={12}>
-						<Form.Item name="taxRate" label="Tax rate" rules={rules.taxRate}>
-							<InputNumber
-								className="w-100"
-								min={0}
-								max={100}
-								formatter={value => `${value}%`}
-								parser={value => value.replace('%', '')}
-							/>
-						</Form.Item>
-					</Col> */}
-          </Row>
-        </Card>
-        <Card title="Customization">
-          <Row gutter={16}>
-            <Col xs={24} sm={24} md={12}>
-              <Form.Item
-                name="is_custom"
-                label="Is Custom"
-                initialValue={0}
-                valuePropName="checked"
-                getValueFromEvent={(e) => Number(e.target.checked)}
-              >
-                <Checkbox>Is Custom</Checkbox>
-              </Form.Item>
-            </Col>
-            {/* <Col xs={24} sm={24} md={12}>
-						<Form.Item name="comparePrice" label="Compare price" rules={rules.comparePrice}>
-							<InputNumber
-								className="w-100"
-								value={0}
-								formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-								parser={value => value.replace(/\$\s?|(,*)/g, '')}
-							/>
-						</Form.Item>
-					</Col> */}
-            {/* <Col xs={24} sm={24} md={12}>
-						<Form.Item name="cost" label="Cost per item" rules={rules.cost}>
-							<InputNumber
-								className="w-100"
-								formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-								parser={value => value.replace(/\$\s?|(,*)/g, '')}
-							/>
-						</Form.Item>
-					</Col> */}
-            {/* <Col xs={24} sm={24} md={12}>
-						<Form.Item name="taxRate" label="Tax rate" rules={rules.taxRate}>
-							<InputNumber
-								className="w-100"
-								min={0}
-								max={100}
-								formatter={value => `${value}%`}
-								parser={value => value.replace('%', '')}
-							/>
-						</Form.Item>
-					</Col> */}
-          </Row>
+        <Card title="Distance Base Price (DBP)">
+          <Form.Item label="DBP" required rules={rules.name}>
+            <Row className="mt-2">
+              {dbpDefaults.map((item, index) => (
+                <Col key={item.id} xs={24} sm={24} md={24}>
+                  <Row gutter={8}>
+                    <Form.Item hidden name={["dbp", item.id, "_id"]} />
+                    <Col className="mr-md-2" xs={24} sm={24} md={5}>
+                      <Form.Item
+                        // noStyle
+                        valuePropName="name"
+                        rules={[
+                          { required: true, message: "Province is required" },
+                        ]}
+                      >
+                        <Input placeholder={item.day} disabled></Input>
+                      </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={24} md={7}>
+                      <Form.Item
+                        name={["dbp", item.id, `price`]}
+                        rules={[
+                          { required: true, message: "Street is required" },
+                        ]}
+                      >
+                        <InputNumber
+                          prefix={<div className="mr-2">₹</div>}
+                          className="w-100"
+                          placeholder="Price (in ₹)"
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col xs={24} sm={24} md={9}>
+                      <Form.Item
+                        name={["dbp", item.id, `uptoKms`]}
+                        rules={[
+                          { required: true, message: "Street is required" },
+                        ]}
+                      >
+                        <InputNumber
+                          addonAfter="Kms"
+                          className="w-100"
+                          placeholder="Upto (in Kms)"
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Col>
+              ))}
+            </Row>
+          </Form.Item>
         </Card>
       </Col>
-      <Col xs={24} sm={24} md={7}>
-        <Card title="Media">
-          <Form.Item name="icon" getValueFromEvent={({ file }) => file}>
-            <Dragger
-              {...imageUploadProps}
-              beforeUpload={beforeUpload}
-              onChange={(e) => props.handleUploadChange(e)}
-            >
-              {props.uploadedImg ? (
-                <img
-                  src={props.uploadedImg}
-                  alt="avatar"
-                  id="featuredImage"
-                  className="img-fluid"
-                />
-              ) : (
-                <div>
-                  {props.uploadLoading ? (
-                    <div>
-                      <LoadingOutlined className="font-size-xxl text-primary" />
-                      <div className="mt-3">Uploading</div>
-                    </div>
-                  ) : (
-                    <div>
-                      <CustomIcon className="display-3" svg={ImageSvg} />
-                      <p>Click or drag file to upload</p>
-                    </div>
-                  )}
-                </div>
-              )}
-            </Dragger>
-          </Form.Item>
-        </Card>
-        <Card title="Organization">
-          <Form.Item name="category_id" label="Category">
-            <Select
-              className="w-100"
-              placeholder="Category"
-              onChange={handleCategory}
-              loading={!loadingDoneCategories}
-            >
-              {categories?.map((elm) => (
-                <Option key={elm.id} value={elm.id}>
-                  {elm.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          {newSubCategory && (
-            <Form.Item name="sub_category_id" required label="Sub Category">
-              <Select
-                className="w-100"
-                placeholder="Sub Category"
-                loading={!loadingDoneSubCategories}
+      <Col xs={24} sm={24} md={10}>
+        <Card title="Distance Additional Price (DAP)">
+          <Row className="mt-md-2" gutter={16}>
+            <Col xs={24} sm={24} md={11}>
+              <Form.Item hidden name={["dap", "_id"]} />
+              <Form.Item
+                name={["dap", `price`]}
+                label="Price"
+                rules={[{ required: true, message: "Street is required" }]}
               >
-                {newSubCategory.map((elm) => (
-                  <Option key={elm.id} value={elm.id}>
-                    {elm.name}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-          )}
+                <InputNumber
+                  prefix={<div className="mr-2">₹</div>}
+                  addonAfter="per Km"
+                  className="w-100"
+                  placeholder="Price (in ₹)"
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={24} md={13}>
+              <Form.Item
+                name={["dap", `afterKms`]}
+                label="After Kms"
+                rules={[{ required: true, message: "Street is required" }]}
+              >
+                <InputNumber
+                  addonAfter="Kms"
+                  className="w-100"
+                  placeholder="After distance (in Kms)"
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Card>
+        <Card title="Time Multiplier Factor(TMF)">
+          <Row className="mt-md-2">
+            <Col xs={24} sm={24} md={24}>
+              <Form.List
+                name={"tmp"}
+                rules={[
+                  {
+                    validator: async (_, tmp) => {
+                      if (!tmp || tmp.length < 1) {
+                        return Promise.reject(new Error("At least 1 rule"));
+                      }
+                    },
+                  },
+                ]}
+              >
+                {(fields, { add, remove }, { errors }) => (
+                  <>
+                    {fields.map(({ key, name, ...restField }, index) => (
+                      <>
+                        <Row key={key} gutter={16} align="">
+                          <Col xs={24} sm={24} md={6}>
+                            <Form.Item
+                              {...restField}
+                              label="Multiplier"
+                              name={[name, "multiplier"]}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Missing multiplier",
+                                },
+                              ]}
+                            >
+                              <InputNumber
+                                addonAfter="x"
+                                className="w-100"
+                                placeholder="E.g - 1x"
+                              />
+                            </Form.Item>
+                          </Col>
+                          <Col xs={24} sm={24} md={9}>
+                            <Form.Item
+                              {...restField}
+                              label="Condition"
+                              name={[name, "condition"]}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Missing last name",
+                                },
+                              ]}
+                            >
+                              <Select
+                                placeholder="Condition"
+                                options={options}
+                              />
+                            </Form.Item>
+                          </Col>
+                          <Col xs={24} sm={24} md={7}>
+                            <Form.Item
+                              {...restField}
+                              label="Time (in hrs)"
+                              name={[name, "perTime"]}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Missing last name",
+                                },
+                              ]}
+                            >
+                              <InputNumber
+                                addonAfter="hr(s)"
+                                placeholder="Hours"
+                              />
+                            </Form.Item>
+                          </Col>
+                          {fields.length > 1 ? (
+                            <Col xs={24} sm={24} md={2}>
+                              <Button
+                                type="text"
+                                icon={<MinusCircleOutlined />}
+                                onClick={() => remove(name)}
+                              />
+                            </Col>
+                          ) : null}
+                        </Row>
+                      </>
+                    ))}
 
-          {/* <Form.Item name="tags" label="Tags" >
-				<Select mode="tags" style={{ width: '100%' }} placeholder="Tags">
-					{tags.map(elm => <Option key={elm}>{elm}</Option>)}
-				</Select>
-				</Form.Item> */}
+                    <Form.Item>
+                      <Button
+                        type="dashed"
+                        onClick={() => add()}
+                        block
+                        icon={<PlusOutlined />}
+                      >
+                        Add rule
+                      </Button>
+                    </Form.Item>
+                    <Form.ErrorList errors={errors} />
+                  </>
+                )}
+              </Form.List>
+            </Col>
+          </Row>
+        </Card>
+        <Card title="Waiting Charges (WC)">
+          <Row className="mt-md-2" gutter={16}>
+            <Col xs={24} sm={24} md={24}>
+              <Form.Item hidden name={["wc", "_id"]} />
+              <Form.Item
+                name={["wc", `initialWaitTime`]}
+                label="Initial Wait Time"
+                rules={[{ required: true, message: "Street is required" }]}
+              >
+                <InputNumber
+                  addonAfter="minute(s)"
+                  className="w-100"
+                  placeholder="Time (in minute(s))"
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={24} md={11}>
+              <Form.Item
+                name={["wc", `price`]}
+                label="Price"
+                rules={[{ required: true, message: "Street is required" }]}
+              >
+                <InputNumber
+                  prefix={<div className="mr-2">₹</div>}
+                  className="w-100"
+                  placeholder="Price (in ₹)"
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={24} md={13}>
+              <Form.Item
+                name={["wc", `perWaitTime`]}
+                label="Per Wait Time"
+                rules={[{ required: true, message: "Street is required" }]}
+              >
+                <InputNumber
+                  addonAfter="minute(s)"
+                  className="w-100"
+                  placeholder="Time (in minute(s))"
+                />
+              </Form.Item>
+            </Col>
+          </Row>
         </Card>
       </Col>
     </Row>

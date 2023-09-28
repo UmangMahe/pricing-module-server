@@ -3,15 +3,11 @@ import { connect } from "react-redux";
 import { Button, Form, Input, Divider, Alert } from "antd";
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
-import { GoogleSVG, FacebookSVG } from '@assets/svg/icon';
-import CustomIcon from '@components/util-components/CustomIcon'
 import { 
 	signIn, 
 	showLoading, 
 	showAuthMessage, 
 	hideAuthMessage, 
-	signInWithGoogle, 
-	signInWithFacebook 
 } from '@redux/actions/Auth';
 import { useHistory } from "react-router-dom";
 import { motion } from "framer-motion"
@@ -19,14 +15,11 @@ import { motion } from "framer-motion"
 export const LoginForm = props => {
 	let history = useHistory();
 
-	const { 
-		otherSignIn, 
+	const {  
 		showForgetPassword, 
 		hideAuthMessage,
 		onForgetPasswordClick,
 		showLoading,
-		signInWithGoogle,
-		signInWithFacebook,
 		extra, 
 		signIn, 
 		token, 
@@ -38,24 +31,14 @@ export const LoginForm = props => {
 	} = props
 
 	const initialCredential = {
-		email: 'umang@gmail.com',
-		password: 'umang123'
+		email: 'admin@gmail.com',
+		password: 'admin@123'
 	}
 
 	const onLogin = values => {
 		showLoading()
 		signIn(values);
 	};
-
-	const onGoogleLogin = () => {
-		showLoading()
-		signInWithGoogle()
-	}
-
-	const onFacebookLogin = () => {
-		showLoading()
-		signInWithFacebook()
-	}
 
 	useEffect(() => {
 		if (token !== null && allowRedirect) {
@@ -67,31 +50,7 @@ export const LoginForm = props => {
 			}, 3000);
 		}
 	});
-	
-	const renderOtherSignIn = (
-		<div>
-			<Divider>
-				<span className="text-muted font-size-base font-weight-normal">or connect with</span>
-			</Divider>
-			<div className="d-flex justify-content-center">
-				<Button 
-					onClick={() => onGoogleLogin()} 
-					className="mr-2" 
-					disabled={loading} 
-					icon={<CustomIcon svg={GoogleSVG}/>}
-				>
-					Google
-				</Button>
-				<Button 
-					onClick={() => onFacebookLogin()} 
-					icon={<CustomIcon svg={FacebookSVG}/>}
-					disabled={loading} 
-				>
-					Facebook
-				</Button>
-			</div>
-		</div>
-	)
+
 
 	return (
 		<>
@@ -156,9 +115,7 @@ export const LoginForm = props => {
 						Sign In
 					</Button>
 				</Form.Item>
-				{
-					otherSignIn ? renderOtherSignIn : null
-				}
+				
 				{ extra }
 			</Form>
 		</>
@@ -189,8 +146,6 @@ const mapDispatchToProps = {
 	showAuthMessage,
 	showLoading,
 	hideAuthMessage,
-	signInWithGoogle,
-	signInWithFacebook
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginForm)

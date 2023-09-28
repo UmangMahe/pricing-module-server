@@ -2,9 +2,9 @@ import React from 'react';
 import ProductForm from '../ProductForm/index';
 
 
-const AddProduct = () => {
+const AddProduct = (props) => {
 	return (
-		<ProductForm mode="ADD"/>
+		<ProductForm mode="ADD" param={props.match.params} match={props.match}/>
 	)
 }
 

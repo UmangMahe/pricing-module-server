@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Row, Col, Button, Card, Avatar, Dropdown, Table, Menu, Tag } from 'antd';
-import StatisticWidget from 'components/shared-components/StatisticWidget';
-import ChartWidget from 'components/shared-components/ChartWidget';
-import AvatarStatus from 'components/shared-components/AvatarStatus';
-import GoalWidget from 'components/shared-components/GoalWidget';
+import StatisticWidget from '@components/shared-components/StatisticWidget';
+import ChartWidget from '@components/shared-components/ChartWidget';
+import AvatarStatus from '@components/shared-components/AvatarStatus';
+import GoalWidget from '@components/shared-components/GoalWidget';
 import { 
   VisitorChartData, 
   AnnualStatisticData, 
@@ -12,7 +12,7 @@ import {
   RecentTransactionData 
 } from './DefaultDashboardData';
 import ApexChart from "react-apexcharts";
-import { apexLineChartDefaultOption, COLOR_2 } from 'constants/ChartConstant';
+import { apexLineChartDefaultOption, COLOR_2 } from '@constants/ChartConstant';
 import { 
   UserAddOutlined, 
   FileExcelOutlined, 
@@ -22,7 +22,7 @@ import {
   StopOutlined, 
   ReloadOutlined 
 } from '@ant-design/icons';
-import utils from 'utils';
+import utils from '@utils';
 import {withRouter} from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
