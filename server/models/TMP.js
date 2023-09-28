@@ -14,16 +14,15 @@ const TMPSchema = new mongoose.Schema({
         type : Number,
         default: 1
     },
-    until: {
-        type: Number,
-        default: null
+    condition: {
+        type: String,
+        required: true,
+        enum: ['until', 'after']
     },
-    after: {
+    perTime: {
         type: Number,
-        default: null,
-        required: function(){
-            return this.until === null
-        }
+        min: 60000,
+        required: true
     }
 
 }, {
