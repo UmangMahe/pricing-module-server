@@ -2,10 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 const Flex = props => {
-	const { children, className, alignItems, justifyContent, mobileFlex, flexDirection } = props
+	const { children, className, alignItems, justifyContent, mobileFlex, flexDirection, style = {} } = props
 	const getFlexResponsive = () => mobileFlex ? 'd-flex' : 'd-md-flex'
 	return (
-		<div className={`${getFlexResponsive()} ${className} ${flexDirection?('flex-' + flexDirection): ''} ${alignItems?('align-items-' + alignItems):''} ${justifyContent?('justify-content-' + justifyContent):''}` }>
+		<div style={style} className={`${getFlexResponsive()} ${className} ${flexDirection?('flex-' + flexDirection): ''} ${alignItems?('align-items-' + alignItems):''} ${justifyContent?('justify-content-' + justifyContent):''}` }>
 			{children}
 		</div>
 	)

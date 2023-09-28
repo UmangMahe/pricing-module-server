@@ -22,25 +22,25 @@ const rules = {
   name: [
     {
       required: true,
-      message: "Please enter product name",
+      message: "Please enter Configuration name",
     },
   ],
   description: [
     {
       required: true,
-      message: "Please enter product description",
+      message: "Please enter Configuration description",
     },
   ],
   sort_description: [
     {
       required: true,
-      message: "Please enter product's short description",
+      message: "Please enter Configuration's short description",
     },
   ],
   price: [
     {
       required: true,
-      message: "Please enter product price",
+      message: "Please enter Configuration price",
     },
   ],
   comparePrice: [],
@@ -68,30 +68,41 @@ const tags = [
   "Hobbies",
 ];
 
+const dbpDefaults = [
+  {
+    id: 1,
+    day: "Monday",
+  },
+  {
+    id: 2,
+    day: "Tuesday",
+  },
+  {
+    id: 3,
+    day: "Wednesday",
+  },
+  {
+    id: 4,
+    day: "Thursday",
+  },
+  {
+    id: 5,
+    day: "Friday",
+  },
+  {
+    id: 6,
+    day: "Saturday",
+  },
+  {
+    id: 7,
+    day: "Sunday",
+  },
+];
+
 const GeneralField = (props) => {
-  const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    if (!isJpgOrPng) {
-      message.error("You can only upload JPG/PNG file!");
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error("Image must smaller than 2MB!");
-    }
-    return isJpgOrPng && isLt2M && false;
-  };
-
-  const imageUploadProps = {
-    name: "icon",
-    multiple: false,
-    listType: "picture-card",
-    showUploadList: false,
-  };
-
   const [categories, setCategories] = useState(null);
 
   const [subCategories, setSubCategories] = useState(null);
-
 
   const [newSubCategory, setNewSubCategories] = useState(null);
 
@@ -99,79 +110,93 @@ const GeneralField = (props) => {
     <Row gutter={16}>
       <Col xs={24} sm={24} md={17}>
         <Card title="Basic Info">
-          <Form.Item name="name" label="Product name" rules={rules.name}>
-            <Input placeholder="Product Name" />
-          </Form.Item>
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={rules.description}
-          >
-            <Input.TextArea rows={4} />
-          </Form.Item>
-          <Form.Item
-            name="sort_description"
-            label="Short Description"
-            rules={rules.sort_description}
-          >
-            <Input placeholder="Short Description" />
+          <Form.Item name="name" label="Configuration Name" rules={rules.name}>
+            <Input placeholder="Configuration Name" />
           </Form.Item>
         </Card>
-        <Card title="Pricing">
-          <Row gutter={16}>
-            <Col xs={24} sm={24} md={12}>
-              <Form.Item name="price" label="Price" rules={rules.price}>
+        <Card title="Distance Base Price (DBP)">
+          <Form.Item label="DBP" required rules={rules.name}>
+            <Row className="mt-2">
+              {dbpDefaults.map((item, index) => (
+                <Col key={item.id} xs={24} sm={24} md={17}>
+                  <Input.Group>
+                    <Row gutter={16}>
+                      <Col className="mr-md-4" xs={24} sm={24} md={8}>
+                        <Form.Item
+                          // noStyle
+                          valuePropName="name"
+                          rules={[
+                            { required: true, message: "Province is required" },
+                          ]}
+                        >
+                          <Input placeholder={item.day} disabled></Input>
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} sm={24} md={6}>
+                        <Form.Item
+                          name={["dbp", item.id, `price`]}
+                          // noStyle
+                          rules={[
+                            { required: true, message: "Street is required" },
+                          ]}
+                        >
+                          <InputNumber
+                            prefix={<div className="mr-2">₹</div>}
+                            
+                            className="w-100"
+                            placeholder="Price (in ₹)"
+                          />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} sm={24} md={7}>
+                        <Form.Item
+                          name={["dbp", item.id, `uptoKms`]}
+                          // noStyle
+                          rules={[
+                            { required: true, message: "Street is required" },
+                          ]}
+                        >
+                          <InputNumber
+                            addonAfter="Kms"
+                            className="w-100"
+                            placeholder="Upto (in Kms)"
+                          />
+                        </Form.Item>
+                      </Col>
+                    </Row>
+                  </Input.Group>
+                </Col>
+              ))}
+            </Row>
+          </Form.Item>
+        </Card>
+        <Card title="Distance Additional Price (DAP)">
+          <Row gutter={24}>
+            <Col xs={24} sm={24} md={11}>
+              <Form.Item
+                name={["dap", `price`]}
+                label="Price"
+                rules={[{ required: true, message: "Street is required" }]}
+              >
                 <InputNumber
+                  prefix={<div className="mr-2">₹</div>}
+                  addonAfter="/ per Km"
                   className="w-100"
-				  formatter={value => `₹ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-				  parser={value => value.replace(/₹|(,*)/g, '')}
-                  
+                  placeholder="Price (in ₹)"
                 />
               </Form.Item>
             </Col>
-            {/* <Col xs={24} sm={24} md={12}>
-						<Form.Item name="comparePrice" label="Compare price" rules={rules.comparePrice}>
-							<InputNumber
-								className="w-100"
-								value={0}
-								formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-								parser={value => value.replace(/\$\s?|(,*)/g, '')}
-							/>
-						</Form.Item>
-					</Col> */}
-            {/* <Col xs={24} sm={24} md={12}>
-						<Form.Item name="cost" label="Cost per item" rules={rules.cost}>
-							<InputNumber
-								className="w-100"
-								formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-								parser={value => value.replace(/\$\s?|(,*)/g, '')}
-							/>
-						</Form.Item>
-					</Col> */}
-            {/* <Col xs={24} sm={24} md={12}>
-						<Form.Item name="taxRate" label="Tax rate" rules={rules.taxRate}>
-							<InputNumber
-								className="w-100"
-								min={0}
-								max={100}
-								formatter={value => `${value}%`}
-								parser={value => value.replace('%', '')}
-							/>
-						</Form.Item>
-					</Col> */}
-          </Row>
-        </Card>
-        <Card title="Customization">
-          <Row gutter={16}>
-            <Col xs={24} sm={24} md={12}>
+            <Col xs={24} sm={24} md={11}>
               <Form.Item
-                name="is_custom"
-                label="Is Custom"
-                initialValue={0}
-                valuePropName="checked"
-                getValueFromEvent={(e) => Number(e.target.checked)}
+                name={["dap", `afterKms`]}
+                label="After Kms"
+                rules={[{ required: true, message: "Street is required" }]}
               >
-                <Checkbox>Is Custom</Checkbox>
+                <InputNumber
+                  addonAfter="Kms"
+                  className="w-100"
+                  placeholder="After distance (in Kms)"
+                />
               </Form.Item>
             </Col>
             {/* <Col xs={24} sm={24} md={12}>
@@ -208,44 +233,10 @@ const GeneralField = (props) => {
         </Card>
       </Col>
       <Col xs={24} sm={24} md={7}>
-        <Card title="Media">
-          <Form.Item name="icon" getValueFromEvent={({ file }) => file}>
-            <Dragger
-              {...imageUploadProps}
-              beforeUpload={beforeUpload}
-              onChange={(e) => props.handleUploadChange(e)}
-            >
-              {props.uploadedImg ? (
-                <img
-                  src={props.uploadedImg}
-                  alt="avatar"
-                  id="featuredImage"
-                  className="img-fluid"
-                />
-              ) : (
-                <div>
-                  {props.uploadLoading ? (
-                    <div>
-                      <LoadingOutlined className="font-size-xxl text-primary" />
-                      <div className="mt-3">Uploading</div>
-                    </div>
-                  ) : (
-                    <div>
-                      <CustomIcon className="display-3" svg={ImageSvg} />
-                      <p>Click or drag file to upload</p>
-                    </div>
-                  )}
-                </div>
-              )}
-            </Dragger>
-          </Form.Item>
-        </Card>
+        <Card title="Media"></Card>
         <Card title="Organization">
           <Form.Item name="category_id" label="Category">
-            <Select
-              className="w-100"
-              placeholder="Category"
-            >
+            <Select className="w-100" placeholder="Category">
               {categories?.map((elm) => (
                 <Option key={elm.id} value={elm.id}>
                   {elm.name}
@@ -255,11 +246,7 @@ const GeneralField = (props) => {
           </Form.Item>
           {newSubCategory && (
             <Form.Item name="sub_category_id" required label="Sub Category">
-              <Select
-                className="w-100"
-                placeholder="Sub Category"
-                
-              >
+              <Select className="w-100" placeholder="Sub Category">
                 {newSubCategory.map((elm) => (
                   <Option key={elm.id} value={elm.id}>
                     {elm.name}
