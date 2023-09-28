@@ -297,7 +297,10 @@ router.patch('/toggle', async (req, res) => {
                 })
 
                 log.save();
-                await rule.save().then(item => {
+                await (await rule.save()).populate({
+                    path: 'userId',
+                    select: {name: 1}
+                }).then(item => {
                     return res.status(200).json({
                         message: `Pricing Configuration for ${item.name} - ${rule.disabled ? 'Disabled' : 'Enabled'}`,
                         data: item
