@@ -33,39 +33,39 @@ import { APP_PREFIX_PATH, AUTH_PREFIX_PATH } from '@configs/AppConfig'
 
 
 
-const dashBoardNavTree = [{
-  key: 'dashboards',
-  path: `${APP_PREFIX_PATH}`,
-  title: 'sidenav.dashboard',
-  icon: DashboardOutlined,
-  breadcrumb: false,
-  submenu: [
-    {
-      key: 'dashboards',
-      path: `${APP_PREFIX_PATH}`,
-      title: 'sidenav.dashboard.default',
-      icon: DashboardOutlined,
-      breadcrumb: false,
-      submenu: []
-    },
-    // {
-    //   key: 'dashboards-analytic',
-    //   path: `${APP_PREFIX_PATH}/analytic`,
-    //   title: 'sidenav.dashboard.analytic',
-    //   icon: DotChartOutlined,
-    //   breadcrumb: false,
-    //   submenu: []
-    // },
-    // {
-    //   key: 'dashboards-sales',
-    //   path: `${APP_PREFIX_PATH}/dashboards/sales`,
-    //   title: 'sidenav.dashboard.sales',
-    //   icon: FundOutlined,
-    //   breadcrumb: false,
-    //   submenu: []
-    // }
-  ]
-}]
+// const dashBoardNavTree = [{
+//   key: 'dashboards',
+//   path: `${APP_PREFIX_PATH}`,
+//   title: 'sidenav.dashboard',
+//   icon: DashboardOutlined,
+//   breadcrumb: false,
+//   submenu: [
+//     {
+//       key: 'dashboards',
+//       path: `${APP_PREFIX_PATH}`,
+//       title: 'sidenav.dashboard.default',
+//       icon: DashboardOutlined,
+//       breadcrumb: false,
+//       submenu: []
+//     },
+//     // {
+//     //   key: 'dashboards-analytic',
+//     //   path: `${APP_PREFIX_PATH}/analytic`,
+//     //   title: 'sidenav.dashboard.analytic',
+//     //   icon: DotChartOutlined,
+//     //   breadcrumb: false,
+//     //   submenu: []
+//     // },
+//     // {
+//     //   key: 'dashboards-sales',
+//     //   path: `${APP_PREFIX_PATH}/dashboards/sales`,
+//     //   title: 'sidenav.dashboard.sales',
+//     //   icon: FundOutlined,
+//     //   breadcrumb: false,
+//     //   submenu: []
+//     // }
+//   ]
+// }]
 
 const componentsNavTree = [
   {
@@ -85,31 +85,7 @@ const componentsNavTree = [
           
         ]
       },
-      {
-        key: 'components-uploads',
-        path: `${APP_PREFIX_PATH}/uploads`,
-        title: 'sidenav.components.uploads',
-        icon: CloudUploadOutlined,
-        breadcrumb: true,
-        submenu: [
-          {
-            key: 'components-uploads-cv',
-            path: `${APP_PREFIX_PATH}/uploads/cv`,
-            title: 'sidenav.components.uploads.cv',
-            icon: FileTextOutlined,
-            breadcrumb: true,
-            submenu: []
-          },
-          {
-            key: 'components-uploads-images',
-            path: `${APP_PREFIX_PATH}/uploads/images`,
-            title: 'sidenav.components.uploads.images',
-            icon: FileImageOutlined,
-            breadcrumb: true,
-            submenu: []
-          },
-        ]
-      },
+      
       
       // {
       //   key: 'components-data-entry',
@@ -591,29 +567,13 @@ const componentsNavTree = [
       // }
     ]
   },
-  {
-    key: 'chat',
-    path: `${APP_PREFIX_PATH}/chat`,
-    title: 'sidenav.apps.chat',
-    icon: MessageOutlined,
-    breadcrumb: false,
-    submenu: [
-      {
-        key: 'chat',
-        path: `${APP_PREFIX_PATH}/chat`,
-        title: 'sidenav.apps.chat.default',
-        icon: MessageOutlined,
-        breadcrumb: false,
-        submenu: [],
-        badgeCount: true
-      },
-    ]}
+ 
 ]
 
 
 
 const navigationConfig = [
-  ...dashBoardNavTree,
+  // ...dashBoardNavTree,
   ...componentsNavTree,
   
   

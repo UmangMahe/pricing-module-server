@@ -1,21 +1,26 @@
-import { Button, Card, Input, Select, Table } from "antd";
+import { Button, Card, Input, Radio, Select, Table } from "antd";
 import React, { useState, useEffect } from "react";
 import Flex from "../../../../../components/shared-components/Flex";
 import { PlusCircleOutlined, SearchOutlined } from "@ant-design/icons";
 import Utils from "../../../../../utils";
+import PageHeaderAlt from "../../../../../components/layout-components/PageHeaderAlt";
 
 const { Option } = Select;
 
 const TableCard = ({
   tableData = [],
+  size = "middle",
+  tableName = "",
   tableColumns = [],
   loadingDone,
   leftHeaderRender = {},
   rightHeaderRender = {},
+  selectedRowKeys,
+  setSelectedRowKeys,
+  setSelectedRows,
+  pagination = true,
   ...props
 }) => {
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [list, setList] = useState([]);
 
   useEffect(() => {
@@ -41,26 +46,44 @@ const TableCard = ({
 
   return (
     <Card>
-      <Flex
-        alignItems="center"
-        justifyContent="between"
-        mobileFlex={false}
-        className="mb-4"
+      <PageHeaderAlt
+        style={{
+          margin: 0,
+          padding: "15px",
+          marginTop: "-10px",
+        }}
+        className="border-bottom"
       >
-        <Flex mobileFlex={false}>
-          <div className="mr-md-3 mb-md-0 mb-3">
-            <Input
-              placeholder="Search"
-              prefix={<SearchOutlined />}
-              onChange={(e) => onSearch(e)}
-            />
-          </div>
-          <div className="mb-md-0 mb-3">{leftHeaderRender}</div>
-        </Flex>
-        <div>{rightHeaderRender}</div>
-      </Flex>
+        <div className="container">
+          <Flex
+            className="py-2"
+            mobileFlex={false}
+            justifyContent="between"
+            alignItems="center"
+          >
+            <h2 className="m-0">{tableName}</h2>
+            <Flex mobileFlex={false}>
+              <div className="mr-md-3 mb-md-0 mb-3">
+                <Input
+                  placeholder="Search"
+                  prefix={<SearchOutlined />}
+                  onChange={(e) => onSearch(e)}
+                />
+              </div>
+              <div className="mb-md-0 mb-3">
+                {leftHeaderRender ? leftHeaderRender : null}
+              </div>
+            </Flex>
+
+            <div>{rightHeaderRender ? rightHeaderRender : null}</div>
+          </Flex>
+        </div>
+      </PageHeaderAlt>
+
       <div className="table-responsive">
         <Table
+        pagination={pagination}
+          size={size}
           columns={tableColumns}
           dataSource={list}
           loading={!loadingDone}
@@ -68,7 +91,7 @@ const TableCard = ({
           rowSelection={{
             selectedRowKeys: selectedRowKeys,
             type: "checkbox",
-            preserveSelectedRowKeys: false,
+            preserveSelectedRowKeys: true,
             ...rowSelection,
           }}
         />

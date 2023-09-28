@@ -21,6 +21,8 @@ import {
   SettingOutlined,
   CheckCircleOutlined,
   SnippetsOutlined,
+  EditOutlined,
+  PushpinOutlined,
 } from "@ant-design/icons";
 import AvatarStatus from "@components/shared-components/AvatarStatus";
 import EllipsisDropdown from "@components/shared-components/EllipsisDropdown";
@@ -29,7 +31,13 @@ import NumberFormat from "react-number-format";
 import { useHistory, Link } from "react-router-dom";
 import utils from "@utils";
 import { useAxios } from "@utils/useFetch";
-import { GET_CONFIGS, TOGGLE_CONFIG } from "../../../../constants/ApiConstants";
+import {
+  GET_CONFIGS,
+  GET_IN_USE_CONFIG,
+  REMOVE_CONFIG,
+  SET_DEFAULT_CONFIG,
+  TOGGLE_CONFIG,
+} from "../../../../constants/ApiConstants";
 import TableCard from "./TableCard";
 import DateRender from "../../components/data-entry/date-picker/DateRender";
 import moment from "moment";
@@ -43,7 +51,7 @@ const ProductList = ({ match, ...props }) => {
   let history = useHistory();
   const [list, setList] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
-
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [logOpen, setLogOpen] = useState(false);
 
   const {
@@ -61,6 +69,22 @@ const ProductList = ({ match, ...props }) => {
     }
   );
 
+  const {
+    data: inUseConfig,
+    setData: setInUseConfig,
+    loadingDone: inUseConfigloading,
+  } = useAxios(
+    {
+      method: "GET",
+      url: GET_IN_USE_CONFIG,
+    },
+    function (res) {
+    //   setInUseConfig(res.data);
+      return res.data;
+    }
+  );
+
+
   const { data: categories, loadingDone: loadingDoneCategories } = useAxios(
     {
       method: "GET",
@@ -71,10 +95,17 @@ const ProductList = ({ match, ...props }) => {
 
   const dropdownMenu = (row) => (
     <Menu>
+      
       <Menu.Item onClick={() => editDetails(row)}>
         <Flex alignItems="center">
-          <EyeOutlined />
-          <span className="ml-2">Edit Details</span>
+          <EditOutlined />
+          <span className="ml-2">Modify Config</span>
+        </Flex>
+      </Menu.Item>
+	  <Menu.Item onClick={() => setDefault(row)}>
+        <Flex alignItems="center">
+          <PushpinOutlined />
+          <span className="ml-2">Use as Default</span>
         </Flex>
       </Menu.Item>
       <Menu.Item onClick={() => deleteRow(row)}>
@@ -98,25 +129,70 @@ const ProductList = ({ match, ...props }) => {
     history.push(`${match.url}/${row._id}`);
   };
 
+  const { loadingDone: deleteDone, callback: deleteConfig } =
+    useAxiosCallback();
+
+  const { callback: defaultConfig } = useAxiosCallback();
+
   const deleteRow = (row) => {
-    const objKey = "id";
+    const objKey = "_id";
     let data = list;
     if (selectedRows.length > 1) {
       selectedRows.forEach((elm) => {
-        data = utils.deleteArrayRow(data, objKey, elm.id);
-        setList(data);
-        setSelectedRows([]);
+        deleteConfig({
+          method: "DELETE",
+          url: REMOVE_CONFIG,
+          params: {
+            id: elm._id,
+          },
+          success: (res) => {
+            if (res) {
+              data = utils.deleteArrayRow(data, objKey, elm._id);
+              setConfigs(data);
+              setSelectedRows([]);
+            }
+          },
+        });
       });
-      notification.success({
-        message: "configs Removed",
-      });
+      deleteDone &&
+        notification.success({
+          message: "Configs Removed",
+        });
     } else {
-      data = utils.deleteArrayRow(data, objKey, row.id);
-      setList(data);
-      notification.success({
-        message: "Product Removed",
+      deleteConfig({
+        method: "DELETE",
+        url: REMOVE_CONFIG,
+        params: {
+          id: row._id,
+        },
+        success: (res) => {
+          if (res) {
+            data = utils.deleteArrayRow(data, objKey, row._id);
+            setConfigs(data);
+            notification.success({
+              message: res.message,
+            });
+          }
+        },
       });
     }
+  };
+
+  const setDefault = (row) => {
+    defaultConfig({
+      method: "PATCH",
+      url: SET_DEFAULT_CONFIG,
+      params: {
+        id: row._id,
+      },
+      success: (res) => {
+        if (res) {
+          notification.success({
+            message: res.message,
+          });
+        }
+      },
+    });
   };
 
   const { callback: toggleConfiguration } = useAxiosCallback();
@@ -149,7 +225,7 @@ const ProductList = ({ match, ...props }) => {
       dataIndex: "name",
       render: (_, record) => (
         <div className="d-flex">
-          <AvatarStatus icon={<SettingOutlined />} name={record.name} />
+          <AvatarStatus icon={<SettingOutlined />} name={record?.name} />
         </div>
       ),
       sorter: (a, b) => utils.antdTableSorter(a, b, "name"),
@@ -158,7 +234,7 @@ const ProductList = ({ match, ...props }) => {
       title: "Created By",
       dataIndex: "userId",
       render: (category_id) => {
-        return category_id.name;
+        // return category_id?.name;
       },
       sorter: (a, b) => utils.antdTableSorter(a, b, "name"),
     },
@@ -229,8 +305,22 @@ const ProductList = ({ match, ...props }) => {
 
   return (
     <>
+	<TableCard
+        tableData={[inUseConfig]}
+		tableName="In Use Configuration"
+        tableColumns={tableColumns}
+        loadingDone={inUseConfigloading}
+		leftHeaderRender={<></>}
+		pagination={false}
+        rightHeaderRender={
+         <></>
+        }
+		rowSelection={false}
+		size="small"
+      />
       <TableCard
         tableData={configs}
+		tableName="All Configurations"
         tableColumns={tableColumns}
         loadingDone={loadingDone}
         leftHeaderRender={
@@ -261,6 +351,9 @@ const ProductList = ({ match, ...props }) => {
             Add Config
           </Button>
         }
+        selectedRowKeys={selectedRowKeys}
+        setSelectedRowKeys={setSelectedRowKeys}
+        setSelectedRows={setSelectedRows}
       />
       {modalId && (
         <Modal
@@ -268,12 +361,12 @@ const ProductList = ({ match, ...props }) => {
           open={logOpen}
           destroyOnClose
           onOk={() => setLogOpen(false)}
-		  onCancel={()=>setLogOpen(false)}
+          onCancel={() => setLogOpen(false)}
           centered
-		  cancelButtonProps={{
-			style: {display: 'none'}
-		  }}
-		  width={600}
+          cancelButtonProps={{
+            style: { display: "none" },
+          }}
+          width={600}
           bodyStyle={{
             height: "calc(100vh - 200px)",
             overflowY: "auto",
