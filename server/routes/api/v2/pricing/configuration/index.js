@@ -26,7 +26,7 @@ router.get('/:id', async (req, res) => {
                 if (rule) {
                     const dbp = await DBP.find({ pricingId: rule._id }).select({ "price": 1, "uptoKms": 1, "days": 1 });
                     const dap = await DAP.findOne({ pricingId: rule._id }).select({ "price": 1, "afterKms": 1 });
-                    const tmp = await TMP.find({ pricingId: rule._id }).select({ "multiplier": 1, "until": 1, "after": 1 });
+                    const tmp = await TMP.find({ pricingId: rule._id }).select({ "multiplier": 1, "condition": 1, "perTime": 1 });
                     const wc = await WC.findOne({ pricingId: rule._id }).select({ "initialWaitTime": 1, "perWaitTime": 1, "price": 1 });
 
 
@@ -203,7 +203,7 @@ router.patch('/update', async (req, res) => {
 
                         const updatedDAP = await DAP.findOneAndUpdate({ pricingId: _id, _id: dap._id }, { ...dap }, { new: true }).select({ "price": 1, "afterKms": 1 });
                         const updatedTMP = await Promise.all(tmp.map(async tmpItem => {
-                            return await TMP.findOneAndUpdate({ pricingId: _id, _id: tmpItem._id }, { ...tmpItem }, { new: true }).select({ "multiplier": 1, "until": 1, "after": 1 });
+                            return await TMP.findOneAndUpdate({ pricingId: _id, _id: tmpItem._id }, { ...tmpItem }, { new: true }).select({ "multiplier": 1, "condition": 1, "perTime": 1 });
                         }))
 
                         const updatedWC = await WC.findOneAndUpdate({ pricingId: _id, _id: wc._id }, { ...wc }, { new: true }).select({ "initialWaitTime": 1, "perWaitTime": 1, "price": 1 });
