@@ -12,7 +12,8 @@ const WCSchema = new mongoose.Schema({
 
     initialWaitTime: {
         type: Number,
-        default: 180000
+        default: 1,
+        required: true
     },
     price: {
         type: Number,
@@ -21,8 +22,8 @@ const WCSchema = new mongoose.Schema({
     },
     perWaitTime: {
         type: Number,
-        min: 60000,
-        default: 60000
+        default: 1,
+        required: true
     }
 
 }, {

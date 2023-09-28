@@ -3,8 +3,6 @@ import { connect } from "react-redux";
 import { Button, Form, Input, Divider, Alert } from "antd";
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
-import { GoogleSVG, FacebookSVG } from '@assets/svg/icon';
-import CustomIcon from '@components/util-components/CustomIcon'
 import { 
 	signIn, 
 	showLoading, 
@@ -17,8 +15,7 @@ import { motion } from "framer-motion"
 export const LoginForm = props => {
 	let history = useHistory();
 
-	const { 
-		otherSignIn, 
+	const {  
 		showForgetPassword, 
 		hideAuthMessage,
 		onForgetPasswordClick,

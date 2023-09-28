@@ -10,6 +10,7 @@ import {
   StopOutlined,
   DotChartOutlined,
   MailOutlined,
+  SisternodeOutlined,
   MessageOutlined,
   CloudUploadOutlined,
   CalendarOutlined,
@@ -75,10 +76,10 @@ const componentsNavTree = [
     breadcrumb: true,
     submenu: [
       {
-        key: 'components-categories',
-        path: `${APP_PREFIX_PATH}/categories`,
-        title: 'sidenav.components.emails',
-        icon: MailOutlined,
+        key: 'components-configurations',
+        path: `${APP_PREFIX_PATH}/configurations`,
+        title: 'sidenav.components.configurations',
+        icon: SisternodeOutlined,
         breadcrumb: true,
         submenu: [
           

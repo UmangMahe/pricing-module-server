@@ -1,6 +1,8 @@
 import { lazy } from "react";
 import { APP_PREFIX_PATH, AUTH_PREFIX_PATH } from "../configs/AppConfig";
 import AuthLayout from "../layouts/auth-layout";
+import ProductList from "../views/app-views/Products/ProductList";
+import EditProduct from "../views/app-views/Products/ProductEdit";
 
 export const routes = [
   {
@@ -83,16 +85,24 @@ export const routes = [
         component: lazy(() => import("../views/app-views/dashboards/analytic")),
       },
       {
-        path: `${APP_PREFIX_PATH}/products`,
+        path: `${APP_PREFIX_PATH}/configurations`,
         exact: true,
         meta: {
           auth: true,
-          title: "Products",
+          title: "Configurations",
           breadcrumb: true,
         },
-        component: lazy(() =>
-          import("../views/app-views/Products/ProductList")
-        ),
+        component: ProductList
+      },
+      {
+        path: `${APP_PREFIX_PATH}/configurations/:id`,
+        exact: true,
+        meta: {
+          auth: true,
+          title: "Pricing Configuration Details",
+          breadcrumb: true,
+        },
+        component: EditProduct
       },
       {
         path: `${APP_PREFIX_PATH}/products/add-product`,
@@ -104,18 +114,7 @@ export const routes = [
         },
         component: lazy(() => import("../views/app-views/Products/ProductAdd")),
       },
-      {
-        path: `${APP_PREFIX_PATH}/products/:id`,
-        exact: true,
-        meta: {
-          auth: true,
-          title: "Product Details",
-          breadcrumb: true,
-        },
-        component: lazy(() =>
-          import("../views/app-views/Products/ProductEdit")
-        ),
-      },
+      
       
 
       //   {
