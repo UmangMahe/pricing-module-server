@@ -31,35 +31,11 @@ const rules = {
       message: "Please enter Configuration name",
     },
   ],
-  description: [
-    {
-      required: true,
-      message: "Please enter Configuration description",
-    },
-  ],
-  sort_description: [
-    {
-      required: true,
-      message: "Please enter Configuration's short description",
-    },
-  ],
+
   price: [
     {
       required: true,
       message: "Please enter Configuration price",
-    },
-  ],
-  comparePrice: [],
-  taxRate: [
-    {
-      required: true,
-      message: "Please enter tax rate",
-    },
-  ],
-  cost: [
-    {
-      required: true,
-      message: "Please enter item cost",
     },
   ],
 };
@@ -115,7 +91,7 @@ const GeneralField = ({ form }) => {
           </Form.Item>
         </Card>
         <Card title="Distance Base Price (DBP)">
-          <Form.Item label="DBP" required rules={rules.name}>
+          <Form.Item label="DBP" required>
             <Row className="mt-2">
               {dbpDefaults.map((item, index) => (
                 <Col key={item.id} xs={24} sm={24} md={24}>
@@ -125,9 +101,6 @@ const GeneralField = ({ form }) => {
                       <Form.Item
                         // noStyle
                         valuePropName="name"
-                        rules={[
-                          { required: true, message: "Province is required" },
-                        ]}
                       >
                         <Input placeholder={item.day} disabled></Input>
                       </Form.Item>
@@ -136,11 +109,16 @@ const GeneralField = ({ form }) => {
                       <Form.Item
                         name={["dbp", item.id, `price`]}
                         rules={[
-                          { required: true, message: "Street is required" },
+                          { required: true, message: "Price is required" },
                         ]}
                       >
                         <InputNumber
                           prefix={<div className="mr-2">₹</div>}
+                          min={1}
+                          formatter={(value) =>
+                            `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                          }
+                          parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
                           className="w-100"
                           placeholder="Price (in ₹)"
                         />
@@ -150,12 +128,14 @@ const GeneralField = ({ form }) => {
                       <Form.Item
                         name={["dbp", item.id, `uptoKms`]}
                         rules={[
-                          { required: true, message: "Street is required" },
+                          { required: true, message: "Distance is required" },
                         ]}
                       >
                         <InputNumber
                           addonAfter="Kms"
                           className="w-100"
+                          min={0}
+                          step={0.1}
                           placeholder="Upto (in Kms)"
                         />
                       </Form.Item>
@@ -175,10 +155,15 @@ const GeneralField = ({ form }) => {
               <Form.Item
                 name={["dap", `price`]}
                 label="Price"
-                rules={[{ required: true, message: "Street is required" }]}
+                rules={[{ required: true, message: "Price is required" }]}
               >
                 <InputNumber
                   prefix={<div className="mr-2">₹</div>}
+                  min={1}
+                  formatter={(value) =>
+                    `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                  parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
                   addonAfter="per Km"
                   className="w-100"
                   placeholder="Price (in ₹)"
@@ -189,11 +174,13 @@ const GeneralField = ({ form }) => {
               <Form.Item
                 name={["dap", `afterKms`]}
                 label="After Kms"
-                rules={[{ required: true, message: "Street is required" }]}
+                rules={[{ required: true, message: "Distance is required" }]}
               >
                 <InputNumber
                   addonAfter="Kms"
                   className="w-100"
+                  min={0}
+                  step={0.1}
                   placeholder="After distance (in Kms)"
                 />
               </Form.Item>
@@ -235,6 +222,7 @@ const GeneralField = ({ form }) => {
                               <InputNumber
                                 addonAfter="x"
                                 className="w-100"
+                                min={1}
                                 placeholder="E.g - 1x"
                               />
                             </Form.Item>
@@ -247,7 +235,7 @@ const GeneralField = ({ form }) => {
                               rules={[
                                 {
                                   required: true,
-                                  message: "Missing last name",
+                                  message: "Missing condition",
                                 },
                               ]}
                             >
@@ -265,12 +253,14 @@ const GeneralField = ({ form }) => {
                               rules={[
                                 {
                                   required: true,
-                                  message: "Missing last name",
+                                  message: "Missing time",
                                 },
                               ]}
                             >
                               <InputNumber
                                 addonAfter="hr(s)"
+                                min={0}
+                                step={0.1}
                                 placeholder="Hours"
                               />
                             </Form.Item>
@@ -312,11 +302,12 @@ const GeneralField = ({ form }) => {
               <Form.Item
                 name={["wc", `initialWaitTime`]}
                 label="Initial Wait Time"
-                rules={[{ required: true, message: "Street is required" }]}
+                rules={[{ required: true, message: "Time is required" }]}
               >
                 <InputNumber
                   addonAfter="minute(s)"
                   className="w-100"
+                  min={0}
                   placeholder="Time (in minute(s))"
                 />
               </Form.Item>
@@ -325,10 +316,15 @@ const GeneralField = ({ form }) => {
               <Form.Item
                 name={["wc", `price`]}
                 label="Price"
-                rules={[{ required: true, message: "Street is required" }]}
+                rules={[{ required: true, message: "Price is required" }]}
               >
                 <InputNumber
                   prefix={<div className="mr-2">₹</div>}
+                  min={1}
+                  formatter={(value) =>
+                    `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                  parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
                   className="w-100"
                   placeholder="Price (in ₹)"
                 />
@@ -338,11 +334,12 @@ const GeneralField = ({ form }) => {
               <Form.Item
                 name={["wc", `perWaitTime`]}
                 label="Per Wait Time"
-                rules={[{ required: true, message: "Street is required" }]}
+                rules={[{ required: true, message: "Time is required" }]}
               >
                 <InputNumber
                   addonAfter="minute(s)"
                   className="w-100"
+                  min={0}
                   placeholder="Time (in minute(s))"
                 />
               </Form.Item>

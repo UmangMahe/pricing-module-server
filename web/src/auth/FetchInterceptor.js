@@ -64,7 +64,10 @@ service.interceptors.response.use((response) => {
 		}
 
 		else {
-			notificationParam.message = error.message
+			if(error.response.data.message)
+				notificationParam.message = error.response.data.message
+			else
+				notificationParam.message = error.message
 		}
 
 		notification.error(notificationParam)
