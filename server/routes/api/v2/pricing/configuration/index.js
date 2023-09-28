@@ -9,6 +9,7 @@ const WC = require('../../../../../models/WC');
 const Pricing = require('../../../../../models/Pricing');
 const ErrorHandler = require('../../../../../errors/ErrorHandler');
 const PricingMaster = require('../../../../../models/PricingMaster');
+const Logs = require('../../../../../models/Logs');
 
 // @desc    Get Pricing Configuration By Id
 // @route   GET /api/pricing/configuration/:id
@@ -125,21 +126,25 @@ router.put('/', async (req, res) => {
                 return rule
 
             }).then(async rule => {
-                const i = rule.history.findIndex(item => item.status === "created")
-                rule.history[i].status = "Created configuration"
-                rule.history[i].meta = { id: user._id, name: user.name }
-                await rule.save();
+                const log = await Logs.create({
+                    pricingId: rule._id,
+                    status: "Created configuration",
+                    meta: { id: user._id, name: user.name }
+                })
+                log.save()
                 const count = await Pricing.count();
                 if (count === 1) {
                     await PricingMaster.findOneAndUpdate({}, { pricing: rule._id }, { upsert: true, new: true })
-                    rule.history.push({
+                    const log = await Logs.create({
+                        pricingId: rule._id,
                         status: "Set configuration as default (automatically)",
                         meta: {
                             id: user._id,
                             name: user.name
                         }
                     })
-                    await rule.save()
+                    
+                    await log.save()
                 }
 
                 return res.status(200).json({
@@ -203,14 +208,16 @@ router.patch('/update', async (req, res) => {
 
                         const updatedWC = await WC.findOneAndUpdate({ pricingId: _id, _id: wc._id }, { ...wc }, { new: true }).select({ "initialWaitTime": 1, "perWaitTime": 1, "price": 1 });
 
-                        item.history.push({
+                        const log = await Logs.create({
+                            pricingId: _id,
                             status: "Updated configuration",
                             meta: {
                                 id: user._id,
                                 name: user.name
                             }
                         })
-                        await item.save()
+                        
+                        log.save()
 
                         return {
                             ...item.toObject(),
@@ -280,13 +287,16 @@ router.patch('/toggle', async (req, res) => {
 
                 rule.disabled = !rule.disabled;
 
-                rule.history.push({
+                const log = await Logs.create({
+                    pricingId: rule._id,
                     status: `${rule.disabled ? 'Disabled' : 'Enabled'} configuration`,
                     meta: {
                         id: user._id,
                         name: user.name
                     }
                 })
+
+                log.save();
                 await rule.save().then(item => {
                     return res.status(200).json({
                         message: `Pricing Configuration for ${item.name} - ${rule.disabled ? 'Disabled' : 'Enabled'}`,
