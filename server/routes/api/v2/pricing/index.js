@@ -24,9 +24,12 @@ router.get('/', auth.verifyToken, async (req, res) => {
     try {
         await Users.findById(req.user.id).then(async user => {
             if (user) {
-                await Pricing.find().sort("-updatedAt").then(pricing => {
+                await Pricing.find().sort("-updatedAt").populate({
+                    path: 'userId',
+                    select: {name: 1}
+                }).then(pricing => {
 
-                    const ownConfigs = pricing.filter(v => v.userId.toString() == user._id)
+                    const ownConfigs = pricing.filter(v => v.userId._id.toString() == user._id)
                     return res.status(200).json({
                         message: 'Pricing Configurations',
                         userConfigs: ownConfigs,
