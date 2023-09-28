@@ -21,7 +21,7 @@ const TMPSchema = new mongoose.Schema({
     },
     perTime: {
         type: Number,
-        min: 60000,
+        default: 1,
         required: true
     }
 
