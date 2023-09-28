@@ -12,6 +12,9 @@
 
 node_modules
 */node_modules
+*/*.env
+*.env
+*/config.env
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
