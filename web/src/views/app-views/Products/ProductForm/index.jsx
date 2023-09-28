@@ -120,8 +120,6 @@ const ProductForm = (props) => {
             }
           });
 
-        console.log(dbp2.filter((i) => i));
-
         // const form = new FormData();
         // for (var key in values) {
         //   form.append(key, values[key]);
