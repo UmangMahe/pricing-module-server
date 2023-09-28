@@ -4,8 +4,6 @@ import { connect } from "react-redux";
 
 import { IntlProvider } from "react-intl";
 import { ConfigProvider } from "antd";
-
-import { lazy } from "react";
 import AppLocale from "../lang";
 import { APP_PREFIX_PATH, AUTH_PREFIX_PATH } from "../configs/AppConfig";
 import useBodyClass from "../hooks/useBodyClass";

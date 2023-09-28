@@ -8,7 +8,6 @@ import NumberFormat from 'react-number-format';
 import { useHistory } from "react-router-dom";
 import utils from '@utils'
 import { useAxios } from '@utils/useFetch';
-import { CATEGORY_LIST, PRODUCT_LIST } from '@constants/ApiConstants';
 import Utils from '@utils';
 
 const { Option } = Select
@@ -37,7 +36,7 @@ const ProductList = ({match, ...props}) => {
 
 	const { data: products, loadingDone } = useAxios({
 		method: 'GET',
-		url: PRODUCT_LIST,
+		url: '',
 
 	}, function(res){
 		setList(res.products)
@@ -46,7 +45,7 @@ const ProductList = ({match, ...props}) => {
 
 	const {data: categories, loadingDone: loadingDoneCategories} = useAxios({
 		method: 'GET',
-		url: CATEGORY_LIST,
+		url: '',
 	},'categories')
 
 

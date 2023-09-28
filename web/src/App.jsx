@@ -13,8 +13,6 @@ const themes = {
   light: `/css/light-theme.css`,
 };
 
-console.log(themes)
-
 function App() {
 
   return (

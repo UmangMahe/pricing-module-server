@@ -1,8 +1,8 @@
 import axios from 'axios'
 import { API_BASE_URL, AUTH_PREFIX_PATH } from '../configs/AppConfig'
-import history from '../history'
 import { AUTH_TOKEN } from '@redux/constants/Auth'
 import { notification } from 'antd';
+import { USER_INFO } from '../redux/constants/Auth';
 
 const service = axios.create({
 	baseURL: API_BASE_URL,
@@ -11,10 +11,9 @@ const service = axios.create({
 })
 
 // Config
-const ENTRY_ROUTE = AUTH_PREFIX_PATH
+
 const TOKEN_PAYLOAD_KEY = 'authorization'
 const AUTH_TYPE = 'Bearer'
-const PUBLIC_REQUEST_KEY = 'public-request'
 
 // API Request interceptor
 service.interceptors.request.use(config => {
@@ -23,11 +22,6 @@ service.interceptors.request.use(config => {
 	if (jwtToken) {
 		config.headers[TOKEN_PAYLOAD_KEY] = AUTH_TYPE + " " + jwtToken
 	}
-
-	//   if (!jwtToken && !config.headers[PUBLIC_REQUEST_KEY]) {
-	// 		history.push(ENTRY_ROUTE)
-	// 		window.location.reload();
-	//   }
 
 	return config
 }, error => {
@@ -49,13 +43,12 @@ service.interceptors.response.use((response) => {
 		let notificationParam = {
 			message: ''
 		}
-
-
 		// Remove token and redirect 
 		if (error.response?.status === 401) {
 			notificationParam.message = 'Authentication Fail'
 			notificationParam.description = 'Please login again'
 			localStorage.removeItem(AUTH_TOKEN)
+			localStorage.removeItem(USER_INFO)
 		}
 
 		else if (error.response?.status === 404) {
