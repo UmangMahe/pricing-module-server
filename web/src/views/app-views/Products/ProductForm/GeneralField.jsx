@@ -117,11 +117,6 @@ const GeneralField = ({form}) => {
 
   const [newSubCategory, setNewSubCategories] = useState(null);
 
-  const handleChange = (key, item) => {
-    // console.log(form.getFieldValue(tmp[key]))
-    console.log(key)
-  };
-
   return (
     <Row gutter={16}>
       <Col xs={24} sm={24} md={14}>
@@ -229,7 +224,7 @@ const GeneralField = ({form}) => {
                   <>
                     {fields.map(({ key, name, ...restField }, index) => (
                       <>
-                        <Row gutter={16} align="">
+                        <Row key={key} gutter={16} align="">
                           <Col xs={24} sm={24} md={7}>
                             <Form.Item
                               {...restField}
@@ -261,14 +256,14 @@ const GeneralField = ({form}) => {
                                 },
                               ]}
                             >
-                              <Select onChange={(item)=>handleChange(index, item)} placeholder="Condition" options={options} />
+                              <Select placeholder="Condition" options={options} />
                             </Form.Item>
                           </Col>
                           <Col xs={24} sm={24} md={8}>
                             <Form.Item
                               {...restField}
                               label="Time (in hrs)"
-                              name={[name, "last"]}
+                              name={[name, "perTime"]}
                               
                               rules={[
                                 {
@@ -277,7 +272,7 @@ const GeneralField = ({form}) => {
                                 },
                               ]}
                             >
-                              <InputNumber disabled={!form.getFieldValue('condition')} addonAfter="hr(s)" placeholder="Hours" />
+                              <InputNumber addonAfter="hr(s)" placeholder="Hours" />
                             </Form.Item>
                           </Col>
                           <Col xs={24} sm={24} md={2}>
