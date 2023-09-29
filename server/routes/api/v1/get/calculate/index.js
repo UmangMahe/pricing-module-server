@@ -69,6 +69,10 @@ router.get('/', async (req, res) => {
                 // Calculate total price 
                 const finalPrice = parseInt(((parseFloat(basePrice) + dapCharge) * multiplier) + parseFloat(waitingCharge))
 
+                const n = new Date(0,0);
+                n.setMinutes(+Math.round(timeTaken * 60))
+                const hours = n.getHours();
+                const min = n.getMinutes();
                 return res.status(200).json({
                     message: 'Calculated amount',
                     amount: finalPrice,
@@ -79,7 +83,7 @@ router.get('/', async (req, res) => {
                             price: dapCharge,
                         },
                         timeSurge: {
-                            time: parseInt(timeTaken)+" hr(s)",
+                            time: `${hours ? hours+' hr':''}${min ? min + ' min':''}`,
                             charge: multiplier + 'x'
                         },
                         waitingCharge: waitingCharge
