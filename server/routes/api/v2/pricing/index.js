@@ -26,7 +26,7 @@ router.get('/', auth.verifyToken, async (req, res) => {
             if (user) {
                 await Pricing.find().sort("-updatedAt").populate({
                     path: 'userId',
-                    select: {name: 1}
+                    select: { name: 1 }
                 }).then(pricing => {
 
                     const ownConfigs = pricing.filter(v => v.userId._id.toString() == user._id)
@@ -147,7 +147,8 @@ router.patch('/use', auth.verifyToken, async (req, res) => {
                 await PricingMaster.findOneAndUpdate({ 'pricing': { $ne: rule._id } }, { pricing: rule._id }).then(async _ => {
 
                     if (_) {
-                        const log = await Logs.create({
+
+                        await Logs.insertMany([{
                             pricingId: _.pricing,
                             status: "Removed from default configuration",
                             meta: {
@@ -161,9 +162,7 @@ router.patch('/use', auth.verifyToken, async (req, res) => {
                                 id: user._id,
                                 name: user.name
                             }
-                        })
-
-                        await log.save()
+                        }])
                         return res.status(200).json({
                             message: `${rule.name} is set as default configuration`,
                             data: rule
@@ -215,7 +214,7 @@ router.get('/use', auth.verifyToken, async (req, res) => {
                     path: 'pricing',
                     populate: {
                         path: 'userId',
-                        select: {name:1}
+                        select: { name: 1 }
                     }
                 }).then(rule => {
                     const { pricing } = rule
