@@ -4,9 +4,10 @@ import { Card, Row, Col } from "antd";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { AUTH_PREFIX_PATH } from "../../../../configs/AppConfig";
+import bgImage from '/img/others/img-17.jpg'
 
 const backgroundStyle = {
-  backgroundImage: "url(/img/others/img-17.jpg)",
+  backgroundImage: `url(${bgImage})`,
   backgroundRepeat: "no-repeat",
   backgroundSize: "cover",
 };
