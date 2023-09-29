@@ -65,26 +65,16 @@ export const routes = [
     },
     component: lazy(() => import("../layouts/app-layout")),
     routes: [
-      {
-        path: APP_PREFIX_PATH,
-        exact: true,
-        meta: {
-          auth: true,
-          title: "Dashboard",
-          breadcrumb: true,
-        },
-        component: lazy(() => import("../views/app-views/dashboards/default")),
-      },
-      {
-        path: `${APP_PREFIX_PATH}/analytic`,
-        exact: true,
-        meta: {
-          auth: true,
-          title: "Dashboard",
-          breadcrumb: true,
-        },
-        component: lazy(() => import("../views/app-views/dashboards/analytic")),
-      },
+      // {
+      //   path: APP_PREFIX_PATH,
+      //   exact: true,
+      //   meta: {
+      //     auth: true,
+      //     title: "Dashboard",
+      //     breadcrumb: true,
+      //   },
+      //   component: lazy(() => import("../views/app-views/dashboards/default")),
+      // },
       {
         path: `${APP_PREFIX_PATH}/configurations`,
         exact: true,

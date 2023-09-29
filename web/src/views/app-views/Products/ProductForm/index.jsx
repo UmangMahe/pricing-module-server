@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PageHeaderAlt from "@components/layout-components/PageHeaderAlt";
-import { Tabs, Form, Button, message } from "antd";
+import { Tabs, Form, Button, message, notification } from "antd";
 import Flex from "@components/shared-components/Flex";
 import GeneralField from "./GeneralField";
 import ShippingField from "./ShippingField";
@@ -9,7 +9,10 @@ import Utils from "@utils";
 import { Redirect, useHistory } from "react-router-dom";
 
 import { APP_PREFIX_PATH } from "../../../../configs/AppConfig";
-import { PARTICULAR_CONFIG, UPDATE_CONFIG } from "../../../../constants/ApiConstants";
+import {
+  PARTICULAR_CONFIG,
+  UPDATE_CONFIG,
+} from "../../../../constants/ApiConstants";
 import Loading from "../../../../components/shared-components/Loading";
 
 const { TabPane } = Tabs;
@@ -24,13 +27,12 @@ const ADD = "ADD";
 const EDIT = "EDIT";
 
 const ProductForm = (props) => {
-
-	console.log(props)
+  console.log(props);
   const { mode = ADD, param, match } = props;
 
   const history = useHistory();
   const [form] = Form.useForm();
- 
+
   const [submitLoading, setSubmitLoading] = useState(false);
 
   const [rule, setRule] = useState(null);
@@ -66,7 +68,7 @@ const ProductForm = (props) => {
             });
           });
 
-		  console.log(dbp)
+          console.log(dbp);
 
           let tmp = [];
           data.tmp.forEach((item) => {
@@ -84,12 +86,11 @@ const ProductForm = (props) => {
     }
   }, [mode, form, param, props]);
 
-
   const { callback: addConfig } = useAxiosCallback();
   const { callback: updateConfig } = useAxiosCallback();
 
   const [tabKey, setTabKey] = useState("1");
-  
+
   const onFinish = () => {
     setSubmitLoading(true);
     form
@@ -124,7 +125,7 @@ const ProductForm = (props) => {
             }
           });
 
-		  console.log(dbp2)
+        console.log(dbp2);
         values.dbp = dbp2
           .map((i) => {
             if (i._id === undefined) {
@@ -135,35 +136,41 @@ const ProductForm = (props) => {
           .filter((i) => i);
 
         setTimeout(() => {
-          setSubmitLoading(false);
-
           if (mode === ADD) {
             addConfig({
               method: "PUT",
               url: PARTICULAR_CONFIG,
               data: values,
+              errorNotification: false,
               success: (res) => {
                 if (res) {
-                  message.success(`Created ${values.name} to configuration list`);
-				  history.goBack();
+                  setSubmitLoading(false);
+                  message.success(
+                    `Created ${values.name} to configuration list`
+                  );
+                  history.goBack();
                 }
+              },
+              error: (err) => {
+                const { message } = err.response.data;
+                notification.error({ message });
               },
             });
           }
           if (mode === EDIT) {
-
             updateConfig({
               method: "PATCH",
               url: `${UPDATE_CONFIG}`,
-			  params: {
-				id: param.id
-			  },
+              params: {
+                id: param.id,
+              },
               data: values,
               success: (res) => {
                 if (res) {
-					message.success(res.message);
-					history.goBack();
-				  }
+                  setSubmitLoading(false);
+                  message.success(res.message);
+                  history.goBack();
+                }
               },
             });
           }
@@ -201,7 +208,9 @@ const ProductForm = (props) => {
                 <div className="mb-3">
                   <Button
                     className="mr-2"
-                    onClick={() => history.push(`${APP_PREFIX_PATH}/configurations`)}
+                    onClick={() =>
+                      history.push(`${APP_PREFIX_PATH}/configurations`)
+                    }
                   >
                     Discard
                   </Button>
@@ -226,9 +235,7 @@ const ProductForm = (props) => {
               <TabPane tab="General" key="1">
                 <GeneralField form={form} />
               </TabPane>
-              {/* {/* <TabPane tab="Variation" key="2">
-						<VariationField />
-					</TabPane> */}
+              
             </Tabs>
           </div>
         </Form>

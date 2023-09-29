@@ -3,7 +3,7 @@ const router = express.Router();
 const auth = require('../../../middleware/auth');
 
 
-// router.use('/get/profile/', auth.verifyUID, require('./get/profile'));
+router.use('/get/calculate', require('./get/calculate'));
 // router.use('/get/skills/', auth.verifyUID, require('./get/skills'))
 // router.use('/get/extras/', auth.verifyUID, require('./get/extras'))
 // router.use('/get/resume/', auth.verifyUID, require('./get/resume'))

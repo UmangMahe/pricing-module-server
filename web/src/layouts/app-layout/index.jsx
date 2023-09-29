@@ -22,6 +22,7 @@ import utils from "@utils";
 import { useThemeSwitcher } from "react-css-theme-switcher";
 import { Suspense } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
+import { APP_PREFIX_PATH } from "../../configs/AppConfig";
 
 const { Content } = Layout;
 const { useBreakpoint } = Grid;
@@ -82,7 +83,7 @@ export const AppLayout = (
                   {routes.map((route, index) => {
                     return <Route key={index} {...route}></Route>;
                   })}
-
+                  <Redirect from={APP_PREFIX_PATH} to={APP_PREFIX_PATH+'/configurations'} />
                   <Redirect to="/404" />
                 </Switch>
               </Suspense>

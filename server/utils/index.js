@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const moment = require('moment');
 const { defaultDateFormat } = require("../constants");
 
+
 const getAuthTokenFromHeader = (header, decode = false) => {
     const bearerHeader = header["authorization"];
     const token = bearerHeader && bearerHeader.split(" ")[1];
