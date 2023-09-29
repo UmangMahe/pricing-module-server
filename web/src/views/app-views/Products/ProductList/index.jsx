@@ -304,10 +304,9 @@ const ProductList = ({ match, ...props }) => {
 
   return (
     <>
-	{console.log(inUseConfig)}
-	{[inUseConfig].length > 1 ? (
+	{inUseConfig && [inUseConfig].length > 0 ? (
 		<TableCard
-        tableData={typeof inUseConfig === 'object'?[inUseConfig]:inUseConfig}
+        tableData={inUseConfig}
 		tableName="In Use Configuration"
         tableColumns={tableColumns}
         loadingDone={inUseConfigloading}
