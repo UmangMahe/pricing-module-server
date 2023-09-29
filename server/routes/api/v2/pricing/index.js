@@ -144,37 +144,54 @@ router.patch('/use', auth.verifyToken, async (req, res) => {
                 if (rule.disabled) return res.status(400).json({
                     message: 'Cannot set a disabled configuration as default. Please enable it first'
                 })
-                await PricingMaster.findOneAndUpdate({ 'pricing': { $ne: rule._id } }, { pricing: rule._id }).then(async _ => {
+                const count = await PricingMaster.countDocuments();
+                if(count)
+                    await PricingMaster.findOneAndUpdate({ 'pricing': { $ne: rule._id } }, { pricing: rule._id }).then(async _ => {
+                        if (_) {
 
-                    if (_) {
-
-                        await Logs.insertMany([{
-                            pricingId: _.pricing,
-                            status: "Removed from default configuration",
-                            meta: {
-                                id: user._id,
-                                name: user.name
-                            }
-                        }, {
-                            pricingId: rule._id,
-                            status: "Set configuration as default",
-                            meta: {
-                                id: user._id,
-                                name: user.name
-                            }
-                        }])
-                        return res.status(200).json({
-                            message: `${rule.name} is set as default configuration`,
-                            data: rule
+                            await Logs.insertMany([{
+                                pricingId: _.pricing,
+                                status: "Removed from default configuration",
+                                meta: {
+                                    id: user._id,
+                                    name: user.name
+                                }
+                            }, {
+                                pricingId: rule._id,
+                                status: "Set configuration as default",
+                                meta: {
+                                    id: user._id,
+                                    name: user.name
+                                }
+                            }])
+                            return res.status(200).json({
+                                message: `${rule.name} is set as default configuration`,
+                                data: rule
+                            })
+                        }
+                        else return res.status(200).json({
+                            message: `${rule.name} is already set as default configuration`,
                         })
-                    }
-                    else return res.status(200).json({
-                        message: `${rule.name} is already set as default configuration`,
+
                     })
-
-                })
-
-
+                else {
+                    await PricingMaster.findOneAndUpdate({},{pricing: rule._id}, {upsert: true, new: true}).then(async _=>{
+                        if(_){
+                            await Logs.insertMany([{
+                                pricingId: rule._id,
+                                status: "Set configuration as default",
+                                meta: {
+                                    id: user._id,
+                                    name: user.name
+                                }
+                            }])
+                            return res.status(200).json({
+                                message: `${rule.name} is set as default configuration`,
+                                data: rule
+                            })
+                        }
+                    })
+                }
             }
             else {
                 return res.status(404).json({
@@ -210,7 +227,7 @@ router.get('/use', auth.verifyToken, async (req, res) => {
 
             const rule = await PricingMaster.findOne({})
             try {
-                if(rule)
+                if (rule)
                     rule.populate({
                         path: 'pricing',
                         populate: {
