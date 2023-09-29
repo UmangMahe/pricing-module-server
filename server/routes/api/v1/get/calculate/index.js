@@ -38,17 +38,53 @@ router.get('/', async (req, res) => {
 
             const timeTaken = duration.asHours();
 
-            const dbp = await DBP.findOne({pricingId: pricing, days: {$in: weekDay}})
-            const dap = await DAP.findOne({pricingId: pricing})
-            const tmp = await TMP.find({pricingId: pricing})
-            const wc = await WC.findOne({pricingId: pricing})
+            const dbp = await DBP.findOne({ pricingId: pricing, days: { $in: weekDay } })
+            const dap = await DAP.findOne({ pricingId: pricing })
+            const tmp = await TMP.find({ pricingId: pricing })
+            const wc = await WC.findOne({ pricingId: pricing })
 
-            if(dbp && dap && tmp && wc){
-                const {price: basePrice, uptoKms} = dbp;
-                const {price: dapPrice, afterKms} = dap;
-                // if(distance > afterKms){
+            if (dbp && dap && tmp && wc) {
+                const { price: basePrice, uptoKms } = dbp;
+                const { price: dapPrice } = dap;
+                const { initialWaitTime, price: wcPrice, perWaitTime } = wc
+                let dapCharge;
+                let multiplier = 1;
+                let waitingCharge = 0
+                if (distance > uptoKms) {
+                    dapCharge = parseFloat(dapPrice) * (distance - uptoKms)
+                }
 
-                // }
+                tmp.forEach((item => {
+                    if (item.condition === 'after' && timeTaken > item.perTime) {
+                        multiplier = item.multiplier;
+                    }
+                    else if (item.condition === 'until') {
+                        if (multiplier < item.multiplier)
+                            multiplier = item.multiplier
+                    }
+                }))
+                if (waitingTime > initialWaitTime)
+                    waitingCharge = (parseFloat(wcPrice) * ((waitingTime - initialWaitTime) / perWaitTime)).toFixed(2)
+
+                // Calculate total price 
+                const finalPrice = parseInt(((parseFloat(basePrice) + dapCharge) * multiplier) + parseFloat(waitingCharge))
+
+                return res.status(200).json({
+                    message: 'Calculated amount',
+                    amount: finalPrice,
+                    data: {
+                        baseCharge: basePrice,
+                        additionalDistanceCharge: {
+                            distance: distance - uptoKms+" km",
+                            price: dapCharge,
+                        },
+                        timeSurge: {
+                            time: parseInt(timeTaken)+" hr(s)",
+                            charge: multiplier + 'x'
+                        },
+                        waitingCharge: waitingCharge
+                    },
+                })
             }
             else return res.status(400).json({
                 message: 'There was a problem calculating the price'
