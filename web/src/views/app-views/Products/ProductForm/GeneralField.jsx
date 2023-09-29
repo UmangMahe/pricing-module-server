@@ -150,11 +150,11 @@ const GeneralField = ({ form }) => {
       <Col xs={24} sm={24} md={10}>
         <Card title="Distance Additional Price (DAP)">
           <Row className="mt-md-2" gutter={16}>
-            <Col xs={24} sm={24} md={11}>
+            <Col xs={24} sm={24} md={22}>
               <Form.Item hidden name={["dap", "_id"]} />
               <Form.Item
                 name={["dap", `price`]}
-                label="Price"
+                label="Price (After threshhold limit of DBP)"
                 rules={[{ required: true, message: "Price is required" }]}
               >
                 <InputNumber
@@ -168,10 +168,13 @@ const GeneralField = ({ form }) => {
                   className="w-100"
                   placeholder="Price (in ₹)"
                 />
+                 
               </Form.Item>
+              
             </Col>
             <Col xs={24} sm={24} md={13}>
-              <Form.Item
+            
+              {/* <Form.Item
                 name={["dap", `afterKms`]}
                 label="After Kms"
                 rules={[{ required: true, message: "Distance is required" }]}
@@ -183,7 +186,8 @@ const GeneralField = ({ form }) => {
                   step={0.1}
                   placeholder="After distance (in Kms)"
                 />
-              </Form.Item>
+              </Form.Item> */}
+             
             </Col>
           </Row>
         </Card>
