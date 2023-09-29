@@ -20,7 +20,7 @@ const LoginOne = (props) => {
             <Card>
               <div className="my-4">
                 <div className="text-center">
-                  <h1 className="heading">My Portfolio</h1>
+                  <h1 className="heading">Pricing Module v2</h1>
                   {/* <img className="img-fluid" src={`/img/${theme === 'light' ? 'logo.png': 'logo-white.png'}`} alt="" /> */}
                   <p className="my-3">
                     Don't have an account yet?{" "}

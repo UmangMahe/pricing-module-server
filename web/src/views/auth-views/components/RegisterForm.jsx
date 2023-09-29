@@ -1,6 +1,11 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { LockOutlined, MailOutlined, UserOutlined, PhoneOutlined } from "@ant-design/icons";
+import {
+  LockOutlined,
+  MailOutlined,
+  UserOutlined,
+  PhoneOutlined,
+} from "@ant-design/icons";
 import { Button, Form, Input, Alert, Row, Col, Select, Checkbox } from "antd";
 import {
   signUp,
@@ -11,7 +16,7 @@ import {
 import { useHistory, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-const {Option} = Select;
+const { Option } = Select;
 const rules = {
   name: [
     {
@@ -70,17 +75,11 @@ export const RegisterForm = (props) => {
     form
       .validateFields()
       .then((values) => {
+        const { confirm, ...restFields } = values;
 
-		const {f_name, l_name, phone, countryCode, confirm, ...restFields} = values;
-		
-		showLoading();
+        showLoading();
 
-		const updatedFields = {
-			...restFields,
-			name: f_name.concat(" ",l_name),
-			phone: countryCode.concat(phone),
-		}
-        signUp(updatedFields);
+        signUp(restFields);
       })
       .catch((info) => {
         console.log("Validate Failed:", info);
@@ -118,18 +117,10 @@ export const RegisterForm = (props) => {
         <Row gutter={24}>
           <Col span={12}>
             <Form.Item
-              name={"f_name"}
-              label="First Name"
+              name={"name"}
+              label="Name"
               rules={rules.name}
               hasFeedback
-            >
-              <Input prefix={<UserOutlined className="text-primary" />} />
-            </Form.Item>
-          </Col>
-		  <Col span={12}>
-            <Form.Item
-              name={"l_name"}
-              label="Last Name"
             >
               <Input prefix={<UserOutlined className="text-primary" />} />
             </Form.Item>
@@ -144,27 +135,7 @@ export const RegisterForm = (props) => {
               <Input prefix={<MailOutlined className="text-primary" />} />
             </Form.Item>
           </Col>
-		  <Col span={12}>
-            <Form.Item
-              name="phone"
-              label="Phone Number"
-            >
-              <Input maxLength={10} addonBefore={
-				<Form.Item name="countryCode" initialValue={'91'} noStyle>
-				<Select
-				showSearch
-				
-				  style={{
-					width: 70,
-				  }}
-				>
-				  <Option value="91">+91</Option>
-				  <Option value="1">+1</Option>
-				</Select>
-			  </Form.Item>
-			  } prefix={<PhoneOutlined className="text-primary" />} />
-            </Form.Item>
-          </Col>
+
           <Col span={12}>
             <Form.Item
               name="password"
@@ -181,8 +152,26 @@ export const RegisterForm = (props) => {
             <Form.Item
               name="confirm"
               label="Confirm Password"
-              rules={rules.confirm}
+              dependencies={["password"]}
               hasFeedback
+              rules={[
+                {
+                  required: true,
+                  message: "Please confirm your password!",
+                },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("password") === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error(
+                        "The two passwords that you entered do not match!"
+                      )
+                    );
+                  },
+                }),
+              ]}
             >
               <Input.Password
                 prefix={<LockOutlined className="text-primary" />}
@@ -197,10 +186,11 @@ export const RegisterForm = (props) => {
               rules={[
                 {
                   validator: (_, value) =>
-              value ? Promise.resolve() : Promise.reject(new Error('Should accept agreement')),
-                }
+                    value
+                      ? Promise.resolve()
+                      : Promise.reject(new Error("Should accept agreement")),
+                },
               ]}
-
             >
               <Checkbox>
                 I have read the <Link to="">Terms and Conditions</Link>
@@ -208,7 +198,7 @@ export const RegisterForm = (props) => {
             </Form.Item>
           </Col>
         </Row>
-        
+
         <Form.Item className="text-center mt-4">
           <Button
             className="w-25"
