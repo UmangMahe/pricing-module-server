@@ -15,11 +15,6 @@ const DAPSchema = new mongoose.Schema({
         get: p => (p / 100).toFixed(2),
         set: p => p * 100
     },
-    afterKms: {
-        type: Number,
-        min: [1],
-        default: 1
-    },
 
 }, {
     versionKey: false,
