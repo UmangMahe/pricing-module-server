@@ -57,7 +57,7 @@ export function* signUpWithEmail() {
 
       if (user) {
         // localStorage.setItem(AUTH_TOKEN, user.user.uid);
-        yield put(signUpSuccess(user.token));
+        yield put(signUpSuccess());
       }
     } catch (err) {
       yield put(authFailed());

@@ -79,7 +79,7 @@ const ProductList = ({ match, ...props }) => {
       url: GET_IN_USE_CONFIG,
     },
     function (res) {
-    //   setInUseConfig(res.data);
+      setInUseConfig(res.data);
       return res.data;
     }
   );
@@ -305,8 +305,9 @@ const ProductList = ({ match, ...props }) => {
 
   return (
     <>
-	<TableCard
-        tableData={[inUseConfig]}
+	{(inUseConfig?.length) ? (
+		<TableCard
+        tableData={typeof inUseConfig === 'object'?[inUseConfig]:inUseConfig}
 		tableName="In Use Configuration"
         tableColumns={tableColumns}
         loadingDone={inUseConfigloading}
@@ -318,6 +319,8 @@ const ProductList = ({ match, ...props }) => {
 		rowSelection={false}
 		size="small"
       />
+	):null}
+	
       <TableCard
         tableData={configs}
 		tableName="All Configurations"
