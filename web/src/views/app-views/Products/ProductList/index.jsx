@@ -234,7 +234,7 @@ const ProductList = ({ match, ...props }) => {
       title: "Created By",
       dataIndex: "userId",
       render: (category_id) => {
-        // return category_id?.name;
+        return category_id?.name;
       },
       sorter: (a, b) => utils.antdTableSorter(a, b, "name"),
     },
