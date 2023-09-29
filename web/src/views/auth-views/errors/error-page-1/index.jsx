@@ -12,7 +12,7 @@ const ErrorOne = () => {
 
 	const history = useHistory();
 	return (
-		<div style={{height: '100vh'}}  className={`${theme === 'light' ? 'bg-white' : ''}`}>
+		<div style={{height: '100vh'}} className={`${theme === 'light' ? 'bg-white' : ''}`}>
 			<div className="container-fluid d-flex flex-column justify-content-between h-100 px-md-4 pb-md-4 pt-md-1">
 				<div>
 					<img className="img-fluid" src={`/img/${theme === 'light' ? 'logo.png': 'logo-white.png'}`} alt="" />

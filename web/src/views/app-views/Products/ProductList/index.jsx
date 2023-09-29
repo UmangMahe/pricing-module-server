@@ -43,7 +43,7 @@ import DateRender from "../../components/data-entry/date-picker/DateRender";
 import moment from "moment";
 import { DATE_FORMAT_DD_MM_YYYY_WITH_SLASH } from "../../../../constants/DateConstant";
 import { useAxiosCallback } from "../../../../utils/useFetch";
-import Logs from "./Logs";
+import Logs from "./History";
 
 const { Option } = Select;
 
