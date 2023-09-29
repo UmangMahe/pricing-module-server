@@ -5,16 +5,15 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 import path from 'path'
 import svgrPlugin from 'vite-plugin-svgr'
 import reactRefresh from '@vitejs/plugin-react-refresh'
+import dotenv from 'dotenv'
 
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  
-  define: {
-    'process.env': process.env
-  },
+  plugins: [react(), dotenv.config()],
 
+  base: process.env.VITE_BASE_PATH,
+  
   server: {
     host: true
   },
@@ -36,5 +35,5 @@ export default defineConfig({
       '@redux': path.resolve(__dirname, 'src/redux'),
     }
   }
-  
+
 })
