@@ -6,7 +6,7 @@ Pricing Module v2 Server
 ## Prerequisites
 
 ### Make sure Mongodb and Node.js is configured properly
-1) Clone this repository - (`git clone https://github.com/UmangMahe/pricing-module-server.git`)
+1) Clone this repository - (`$ git clone https://github.com/UmangMahe/pricing-module-server.git`)
 2) There are two folders:
    a. server - This contains all the backend logic and apis developed using Express.js
    b. web - The dashboard panel to maintain the data and perform operations
