@@ -50,6 +50,7 @@ const { Option } = Select;
 const ProductList = ({ match, ...props }) => {
   let history = useHistory();
   const [list, setList] = useState([]);
+  const [inUseConfig, setInUseConfig] = useState([])
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [logOpen, setLogOpen] = useState(false);
@@ -70,8 +71,6 @@ const ProductList = ({ match, ...props }) => {
   );
 
   const {
-    data: inUseConfig,
-    setData: setInUseConfig,
     loadingDone: inUseConfigloading,
   } = useAxios(
     {
@@ -79,7 +78,7 @@ const ProductList = ({ match, ...props }) => {
       url: GET_IN_USE_CONFIG,
     },
     function (res) {
-      setInUseConfig(res.data);
+      setInUseConfig(res.data)
       return res.data;
     }
   );
@@ -305,9 +304,9 @@ const ProductList = ({ match, ...props }) => {
 
   return (
     <>
-	{(inUseConfig?.length) ? (
+	{inUseConfig && [inUseConfig].length > 0 ? (
 		<TableCard
-        tableData={typeof inUseConfig === 'object'?[inUseConfig]:inUseConfig}
+        tableData={inUseConfig}
 		tableName="In Use Configuration"
         tableColumns={tableColumns}
         loadingDone={inUseConfigloading}
