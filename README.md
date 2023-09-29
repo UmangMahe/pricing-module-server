@@ -24,7 +24,7 @@ A. server Folder -
 5) Open terminal from `server` and type - `$ npm run dev`. This will run the server.js and try connecting with the database.
 6) Once connected, open web browser and go to - `http://localhost:<YOUR_PORT_NUMBER>/api/v1` - A welcome message will greet you.
 
-#### Make sure to only change the PORT of your desired choice and not configuring it until required (default: 3002)
+##### Make sure to only change the PORT of your desired choice and not configuring it until required (default: 3002)
 
 B. web Folder -
 
