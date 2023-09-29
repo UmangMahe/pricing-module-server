@@ -221,7 +221,7 @@ router.get('/use', auth.verifyToken, async (req, res) => {
                         const { pricing } = rule
                         return res.status(200).json({
                             message: "In-use Configuration",
-                            data: pricing
+                            data: [pricing]
                         })
                     })
                 else return res.status(200).json({
