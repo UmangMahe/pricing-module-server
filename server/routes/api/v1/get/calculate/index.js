@@ -8,8 +8,7 @@ const DAP = require('../../../../../models/DAP');
 const TMP = require('../../../../../models/TMP');
 const WC = require('../../../../../models/WC');
 
-router.get('/', async (req, res) => {
-
+router.post('/', async (req, res) => {
     const { startTime, endTime, distance, waitingTime, weekDay } = req.fields;
 
     if (!startTime) return res.status(400).json({ message: 'Start Time is required' });
@@ -69,17 +68,21 @@ router.get('/', async (req, res) => {
                 // Calculate total price 
                 const finalPrice = parseInt(((parseFloat(basePrice) + dapCharge) * multiplier) + parseFloat(waitingCharge))
 
+                const n = new Date(0,0);
+                n.setMinutes(+Math.round(timeTaken * 60))
+                const hours = n.getHours();
+                const min = n.getMinutes();
                 return res.status(200).json({
                     message: 'Calculated amount',
                     amount: finalPrice,
                     data: {
                         baseCharge: basePrice,
                         additionalDistanceCharge: {
-                            distance: distance - uptoKms+" km",
-                            price: dapCharge,
+                            distance: (distance - uptoKms).toFixed(1)+" km",
+                            price: dapCharge.toFixed(2),
                         },
                         timeSurge: {
-                            time: parseInt(timeTaken)+" hr(s)",
+                            time: `${hours ? hours+' hr':''}${min ? min + ' min':''}`,
                             charge: multiplier + 'x'
                         },
                         waitingCharge: waitingCharge
