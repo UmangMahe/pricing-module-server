@@ -210,18 +210,23 @@ router.get('/use', auth.verifyToken, async (req, res) => {
 
             const rule = await PricingMaster.findOne({})
             try {
-                rule.populate({
-                    path: 'pricing',
-                    populate: {
-                        path: 'userId',
-                        select: { name: 1 }
-                    }
-                }).then(rule => {
-                    const { pricing } = rule
-                    return res.status(200).json({
-                        message: "In-use Configuration",
-                        data: pricing
+                if(rule)
+                    rule.populate({
+                        path: 'pricing',
+                        populate: {
+                            path: 'userId',
+                            select: { name: 1 }
+                        }
+                    }).then(rule => {
+                        const { pricing } = rule
+                        return res.status(200).json({
+                            message: "In-use Configuration",
+                            data: pricing
+                        })
                     })
+                else return res.status(200).json({
+                    message: 'No default configuration',
+                    data: []
                 })
             }
             catch (err) {

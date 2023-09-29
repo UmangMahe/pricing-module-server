@@ -124,8 +124,6 @@ const ProductForm = (props) => {
                 };
             }
           });
-
-        console.log(dbp2);
         values.dbp = dbp2
           .map((i) => {
             if (i._id === undefined) {
@@ -153,6 +151,7 @@ const ProductForm = (props) => {
               },
               error: (err) => {
                 const { message } = err.response.data;
+				setSubmitLoading(false);
                 notification.error({ message });
               },
             });
