@@ -3,11 +3,10 @@ import LoginForm from "../../components/LoginForm";
 import { Card, Row, Col } from "antd";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { AUTH_PREFIX_PATH } from "../../../../configs/AppConfig";
-import bgImage from '/img/others/img-17.jpg'
+import { APP_BASE_URL, AUTH_PREFIX_PATH } from "../../../../configs/AppConfig";
 
 const backgroundStyle = {
-  backgroundImage: `url(${bgImage})`,
+  backgroundImage: `url(${APP_BASE_URL}/img/others/img-17.jpg)`,
   backgroundRepeat: "no-repeat",
   backgroundSize: "cover",
 };
