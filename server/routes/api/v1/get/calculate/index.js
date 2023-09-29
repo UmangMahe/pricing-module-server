@@ -8,8 +8,7 @@ const DAP = require('../../../../../models/DAP');
 const TMP = require('../../../../../models/TMP');
 const WC = require('../../../../../models/WC');
 
-router.get('/', async (req, res) => {
-
+router.post('/', async (req, res) => {
     const { startTime, endTime, distance, waitingTime, weekDay } = req.fields;
 
     if (!startTime) return res.status(400).json({ message: 'Start Time is required' });
@@ -79,8 +78,8 @@ router.get('/', async (req, res) => {
                     data: {
                         baseCharge: basePrice,
                         additionalDistanceCharge: {
-                            distance: distance - uptoKms+" km",
-                            price: dapCharge,
+                            distance: (distance - uptoKms).toFixed(1)+" km",
+                            price: dapCharge.toFixed(2),
                         },
                         timeSurge: {
                             time: `${hours ? hours+' hr':''}${min ? min + ' min':''}`,
