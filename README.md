@@ -20,7 +20,7 @@ A. server Folder -
 1) Rename the `.env.example` file to `.env`
 2) The default PORT is `3002`.
 3) Add the url of the Mongodb database to the `MONGODB_URI` variable
-4) Add `JWT_SECRET`, it can be any arbitrary value
+4) Add `JWT_SECRET`, it can be any arbitrary string (24 characters is recommended)
 5) Open terminal from `server` and type - `$ npm run dev`. This will run the server.js and try connecting with the database.
 6) Once connected, open web browser and go to - `http://localhost:<YOUR_PORT_NUMBER>/api/v1` - A welcome message will greet you.
 
