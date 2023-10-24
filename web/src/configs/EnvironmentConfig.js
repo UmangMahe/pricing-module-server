@@ -3,7 +3,7 @@ const dev = {
 };
 
 const prod = {
-	API_ENDPOINT_URL: 'https://pricing-module-server.onrender.com/api/v2',
+	API_ENDPOINT_URL: 'https://pricingmoduleserver-3kq6zojy.b4a.run/api/v2',
 };
 
 
