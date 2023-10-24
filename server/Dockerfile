@@ -1,9 +1,9 @@
 FROM node:18
 
-WORKDIR /app
+WORKDIR /server
 
 COPY package*.json ./
 RUN npm ci
 COPY . .
 
-CMD ["npm", "run", "prod"]
+CMD ["npm", "run", "start"]
